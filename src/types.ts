@@ -3,6 +3,10 @@ export interface IEntityHashMap<T> {
 }
 
 export interface IBaseState<T> {
-    id: number[]
+    ids: number[]
     all: IEntityHashMap<T>
+}
+
+export interface ISelectableState<T> extends IBaseState<T> {
+  selectedId: number | null
 }
