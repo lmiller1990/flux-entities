@@ -56,7 +56,7 @@ In a React/Vue app:
 Often, applications will display a list of items, allowing the user to choose one and see more detail. In the application I'm describing, we show a list of projects, and a user can choose one. This is handled by extending  `ISelectableState` in the flux entity pattern:
 
 ```ts
-export interface ISelectableState {
+interface ISelectableState<T> extends IBaseState<T> {
   selectedId: number | null
 }
 ```
@@ -66,9 +66,7 @@ If a project is selected, `selectedId` is the `id` of the project. If not, it is
 The project state and reducer could look like this:
 
 ```ts
-interface IProjectsState extends IBaseState<IProject>, ISelectableState {
-
-}
+interface IProjectsState extends ISelectableState<IProject> {}
 
 const initialProjectsState: IProjectsState = {
   ids: [],
@@ -81,5 +79,34 @@ const projectsReducer = (state = initialProjectsState, action): IBaseState<IProj
 }
 ```
 
-A simple utility function can be used to get the currently selected project
+A simple utility function can be used to get the currently selected project:
 
+```ts
+function selectedEntity<T>(state: ISelectableState<T>): T {
+  return state.all[state.selectedId]
+}
+```
+
+Since the function is generic, we get correct type inference, too!
+
+```ts
+const project = selectedEntity(store.getState().projects) // project is inferred as an IProject
+```
+
+## The Ajax State
+
+We don't want to fetch all the tasks when the app is loaded - that wouldn't be very performant. We will fetch them asynchrously, when a project is selected. This introduces the next interface, `IAjaxState`. When loading some data from a server, there are three states to consider:
+
+1. The initial state. No request has been made, no data has been fetched.
+2. The request has been initiated, but is yet to complete. Show a spinner.
+3. The request has completed - either an error occurred, or the request was successful and we now have the data.
+
+The `IAjaxState` looks like this:
+
+```ts
+export interface IAjaxState<T, ErrorType = string> extends IBaseState<T> {
+  loading: boolean
+  touched: boolean
+  errors: ErrorType[]
+}
+```
