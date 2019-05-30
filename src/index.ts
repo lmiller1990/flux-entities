@@ -1,6 +1,7 @@
-import { createStore, combineReducers } from 'redux'
+import { createStore, combineReducers, applyMiddleware, AnyAction } from 'redux'
 
-import { usersReducer, projectsReducer } from './reducers'
+import { usersReducer, projectsReducer, fetchTasks } from './reducers'
+import thunkMiddleware, { ThunkDispatch } from 'redux-thunk'
 import { selectedEntity } from './selectors';
 
 const rootReducer = combineReducers({
@@ -8,8 +9,11 @@ const rootReducer = combineReducers({
   projects: projectsReducer
 })
 
+
+
 const store = createStore(
-  rootReducer
+  rootReducer,
+  applyMiddleware(thunkMiddleware)
 )
 
 store.dispatch({
@@ -30,9 +34,9 @@ store.dispatch({
   ]
 })
 
-console.log(store.getState())
-console.log(store.getState().users.all[1])
+// console.log(store.getState())
+// console.log(store.getState().users.all[1])
 
-console.log(
-  selectedEntity(store.getState().projects)
-)
+const project = selectedEntity(store.getState().projects);
+
+(store.dispatch as ThunkDispatch<{}, {}, AnyAction>)(fetchTasks())

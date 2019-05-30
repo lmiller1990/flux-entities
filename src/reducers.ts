@@ -80,6 +80,31 @@ const projectsReducer = (state = initialProjectsState, action: ISetProjects): IP
   return state
 }
 
+import axios from 'axios'
+import { ThunkAction, ThunkDispatch } from 'redux-thunk'
+import { AnyAction } from 'redux'
+
+
+interface ITask {
+  id: number
+  title: string
+  projectId: number
+  assignee: number
+}
+
+export const fetchTasks = (): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+    try {
+      dispatch({ type: 'LOAD_TASKS' })
+      const response = await axios.get<ITask[]>('http://www.mocky.io/v2/5cef982f30000028383cd155')
+      console.log(response.data)
+
+    } catch (e) {
+      console.log(e)
+    }
+  }
+}
+
 export {
   usersReducer,
   projectsReducer
