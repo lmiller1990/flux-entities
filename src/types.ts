@@ -10,3 +10,9 @@ export interface IBaseState<T> {
 export interface ISelectableState<T> extends IBaseState<T> {
   selectedId: number | null
 }
+
+export interface IAjaxState<T, ErrorType = string> extends IBaseState<T> {
+  loading: boolean
+  touched: boolean
+  errors: ErrorType[]
+}

@@ -51,7 +51,15 @@ In a React/Vue app:
 {users.ids.map(id => <div>{users.all[id].name}<div>)}
 ```
 
-## The Selectable State
+Looping over the `ids` can be a little awkward. One such example is when you are using the container/component pattern - you would need to pass both the `ids` and `all` objects in `mapStateToProps`. There is a helper method to simplify this: `mapEntities`. It takes a `BaseState` and returns the entities as an array:
+
+```ts
+const users = mapEntities(store.getState.users)
+```
+
+`mapEntities` signature looks is: `mapEntities<T>(state: IBaseState<T>) => T[]` - it's generic, so in the example above, `users` will be inferred to be `IUser[]`!
+
+## Selectable State
 
 Often, applications will display a list of items, allowing the user to choose one and see more detail. In the application I'm describing, we show a list of projects, and a user can choose one. This is handled by extending  `ISelectableState` in the flux entity pattern:
 
@@ -93,7 +101,7 @@ Since the function is generic, we get correct type inference, too!
 const project = selectedEntity(store.getState().projects) // project is inferred as an IProject
 ```
 
-## The Ajax State
+## Ajax State
 
 We don't want to fetch all the tasks when the app is loaded - that wouldn't be very performant. We will fetch them asynchrously, when a project is selected. This introduces the next interface, `IAjaxState`. When loading some data from a server, there are three states to consider:
 
@@ -104,9 +112,17 @@ We don't want to fetch all the tasks when the app is loaded - that wouldn't be v
 The `IAjaxState` looks like this:
 
 ```ts
-export interface IAjaxState<T, ErrorType = string> extends IBaseState<T> {
+interface IAjaxState<T, ErrorType = string> extends IBaseState<T> {
   loading: boolean
   touched: boolean
   errors: ErrorType[]
 }
 ```
+
+There are three helper functions I use to figure out which of three states the entity is in, and update the UI accordingly.
+
+- If `touched` is false, we know that slice of the store is in it's initial state - no request has been made. This is useful for initializing the first API call 
+- If the `loading` is `true`, we know the API call has been initiated, and we can display a spinner. 
+- When `touched` is `true` and `loading` is false, the API calls has finished. If:
+  - if `errors` if empty, the API call was successful.
+  - however if `errors.length > 0`, an error occurred.

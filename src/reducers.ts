@@ -10,7 +10,7 @@ interface IProject {
   endDate: Date
 }
 
-import { IEntityHashMap, IBaseState, ISelectableState } from './types'
+import { IEntityHashMap, IBaseState, ISelectableState, IAjaxState } from './types'
 
 const initialState: IBaseState<IUser> = {
   ids: [],
@@ -92,12 +92,25 @@ interface ITask {
   assignee: number
 }
 
+interface ITasksState extends IAjaxState<ITask> {}
+
+const initialTasksState: ITasksState = {
+  ids: [],
+  all: [],
+  loading: false,
+  touched: false,
+  errors: []
+}
+
+const tasksReducer = (state = initialTasksState, action): ITasksState => {
+  return initialTasksState
+}
+
 export const fetchTasks = (): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
   return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
     try {
       dispatch({ type: 'LOAD_TASKS' })
       const response = await axios.get<ITask[]>('http://www.mocky.io/v2/5cef982f30000028383cd155')
-      console.log(response.data)
 
     } catch (e) {
       console.log(e)
@@ -107,5 +120,6 @@ export const fetchTasks = (): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
 
 export {
   usersReducer,
-  projectsReducer
+  projectsReducer,
+  tasksReducer
 }
