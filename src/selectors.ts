@@ -1,6 +1,10 @@
 import { ISelectableState, IAjaxState, IBaseState } from './types'
 
-function selectedEntity<T>(state: ISelectableState<T>): T {
+function selectedEntity<T>(state: ISelectableState<T>): T | null {
+  if (!state.selectedId) {
+    return null
+  }
+
   return state.all[state.selectedId]
 }
 
