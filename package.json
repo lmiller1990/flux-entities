@@ -1,11 +1,8 @@
 {
-  "dependencies": {
-    "axios": "^0.18.0",
-    "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0",
-    "typescript": "^3.4.5"
-  },
+  "name": "flux-entities",
   "devDependencies": {
     "ts-node": "^8.2.0"
-  }
+  },
+  "main": "src/index.ts",
+  "version": "0.0.1"
 }
