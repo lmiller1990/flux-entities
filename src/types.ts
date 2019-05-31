@@ -11,7 +11,7 @@ export interface ISelectableState<T> extends IBaseState<T> {
   selectedId: number | null
 }
 
-export interface ISelectableAjaxState<T> extends IBaseState<T> {
+export interface ISelectableAjaxState<T> extends IAjaxState<T> {
   selectedId: number | null
 }
 
