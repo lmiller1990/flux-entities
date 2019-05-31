@@ -87,15 +87,17 @@ const projectsReducer = (state = initialProjectsState, action): IBaseState<IProj
 }
 ```
 
-A simple utility function can be used to get the currently selected project:
+A simple utility function can is included get the currently selected project:
 
 ```ts
-function selectedEntity<T>(state: ISelectableState<T>): T {
-  return state.all[state.selectedId]
+function selectedEntity<T>(state: ISelectableState<T>): T | null {
+  if (!state.selectedId) {
+    return null
+  }
 }
 ```
 
-Since the function is generic, we get correct type inference, too!
+Since `selectedEntity` is generic, we get correct type inference, too!
 
 ```ts
 const project = selectedEntity(store.getState().projects) // project is inferred as an IProject
@@ -126,3 +128,5 @@ There are three helper functions I use to figure out which of three states the e
 - When `touched` is `true` and `loading` is false, the API calls has finished. If:
   - if `errors` if empty, the API call was successful.
   - however if `errors.length > 0`, an error occurred.
+
+Three helper functions are provided to determine which state your application is in: `isLoading`, `isLoaded` and `isErrorState`.
