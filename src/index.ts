@@ -3,6 +3,7 @@ import {
   IBaseState,
   IEntityHashMap,
   ISelectableState,
+  ISelectableAjaxState,
 } from './types'
 
 import {
@@ -18,6 +19,7 @@ export {
   IBaseState,
   IEntityHashMap,
   ISelectableState,
+  ISelectableAjaxState,
 
   isLoaded,
   isLoading,
