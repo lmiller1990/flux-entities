@@ -3,6 +3,9 @@
   "devDependencies": {
     "ts-node": "^8.2.0"
   },
-  "main": "src/index.ts",
-  "version": "0.0.3"
+  "scripts": {
+    "build": "yarn tsc --outDir dist --declaration"
+  },
+  "main": "dist/index.js",
+  "version": "0.0.4"
 }
