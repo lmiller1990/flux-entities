@@ -77,14 +77,14 @@ Adds `touched`, `loading` and `loaded` on top of `all` and `ids`. Useful for dat
 Example:
 
 ```ts
-interface IUser {
+interface ITask {
   id: number
-  name: string
+  title: string
 }
 
-interface IUsersState extends IAjaxState<IUser> {}
+interface ITasksState extends IAjaxState<ITask> {}
 
-const initialUsersState: IUsersState = {
+const initialTasksState: ITasksState = {
   all: {},
   ids: [],
   touched: false,
@@ -101,7 +101,7 @@ const fetchTasks = (projectId: number): ThunkAction<Promise<void>, {}, {}, AnyAc
   return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
       dispatch(fetchTasksRequest())
     try {
-      const response = await axios.get<ITask[]>(`http://localhost:8080/tasks?projectId=${projectId}`)
+      const response = await axios.get<ITask[]>(`http://api.com/tasks?projectId=${projectId}`)
       dispatch(fetchTasksSuccess(response.data))
     } catch (e) {
       dispatch(fetchTasksFailure((e as AxiosError).message))
