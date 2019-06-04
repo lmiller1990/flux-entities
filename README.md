@@ -1,132 +1,191 @@
-## The Flux Entity Pattern
+## Motivation
 
-The flux entity pattern, or simply the _entity_ pattern, is a common pattern I identified and extracted over the last few years of working on various single page apps, mainly in Vue and React, using Vuex and Redux respectively. This pattern, however is applicable to any flux library, and likely state management paradigms.
+See ARTICLE.md.
 
-Specifically, this pattern lays out some common rules for how you should structure the state of your flux store. When coupled with TypeScript, it becomes even easily to implement, however the same ideas apply to regular JavaScript. This article will build a small application (well, at least the flux store for one) and demonstrate why this pattern is useful.
+## Examples
 
-## The Application
+Redux, no UI framework: https://github.com/lmiller1990/flux-entities-demo
+React-Redux (and TypeScript): https://github.com/lmiller1990/flux-entities-react-demo
 
-The application we build is for a generic project management tool. There will be three entities in our flux store: users, projects and tasks. As expected, a users can have projects, a project has tasks, and users are assigned to tasks. We want to state to be as flat an flexible as possible, to let us have maximum flexiblity when building the UI. The state of your SPA should not be domain specific, but as loosely coupled as possible.
+## API
 
-## Defining the Reducer State
+### Types
 
-In the flux entity pattern, all reducers start from the same base shape, extending various interfaces where needed. The bulk of the work from now on will be introducing the types that are used in the flux entity pattern, and why they are used.
+#### `IEntityHashMap`
 
-## The Base State
+A generic type used in almost all the other types defined in the library. It's simple hashmap. The signature is `[id: number]: T`.
 
-This base shape looks like this:
+Example:
 
 ```ts
-interface IEntityHashMap<T> {
-    [id: number]: T
+interface IUser {
+  id: number
+  name: string
 }
 
-interface IBaseState<T> {
-    id: number[]
-    all: IEntityHashMap<T>
+interface IUsersMap extends IEntityHashMap<IUser> // { [id: number]: IUser
+```
+
+#### `IBaseState`
+
+At a minimum, each slice of the store will have two properties: `all` and `ids`, where `all` is an `IEntityHashMap` and `ids` is an array, normally of `number` or `string`.
+
+Example:
+
+```ts
+interface IUser {
+  id: number
+  name: string
 }
-```
 
-This is already a great start. Accessing a single entity is a more common need than iterting over the entire collection. If you simply store all the entities in an array, whenever you want a specific one, you need to iterate over each element, checking some key (usually an id). With the hashmap, we simply do `users.all[id]` to retrieve a specific user's details.By storing the actual data in a hash map, looking up a user is a O(n) operation. 
-
-If you do want to iterate over them (for example, if we want to show an entire list of projects) you would simply do:
-
-```ts
-const users = store.getState().users
-
-for (const id of users.ids) {
-    console.log(
-        users.all[id].name // access the user like this
-    )
-}
-```
-
-In a React/Vue app:
-
-```jsx
-<div v-for="id of $store.state.users.ids">
-    <div>{{ $store.state.users.all[id].name }}</div>
-</div>
-
-{users.ids.map(id => <div>{users.all[id].name}<div>)}
-```
-
-Looping over the `ids` can be a little awkward. One such example is when you are using the container/component pattern - you would need to pass both the `ids` and `all` objects in `mapStateToProps`. There is a helper method to simplify this: `mapEntities`. It takes a `BaseState` and returns the entities as an array:
-
-```ts
-const users = mapEntities(store.getState.users)
-```
-
-`mapEntities` signature looks is: `mapEntities<T>(state: IBaseState<T>) => T[]` - it's generic, so in the example above, `users` will be inferred to be `IUser[]`!
-
-## Selectable State
-
-Often, applications will display a list of items, allowing the user to choose one and see more detail. In the application I'm describing, we show a list of projects, and a user can choose one. This is handled by extending  `ISelectableState` in the flux entity pattern:
-
-```ts
-interface ISelectableState<T> extends IBaseState<T> {
-  selectedId: number | null
+interface IUsersState extends IBaseState<IUser> {
+  ids: number[]
+  all: IEntityHashMap<IUser>
 }
 ```
 
-If a project is selected, `selectedId` is the `id` of the project. If not, it is `null` - as opposed to `undefined`. I prefer `null` it's more explicit. 
+#### `IAjaxState`
 
-The project state and reducer could look like this:
+Adds `touched`, `loading` and `loaded` on top of `all` and `ids`. Useful for data loaded from an API.
+
+Example:
 
 ```ts
-interface IProjectsState extends ISelectableState<IProject> {}
+interface IUser {
+  id: number
+  name: string
+}
 
-const initialProjectsState: IProjectsState = {
-  ids: [],
+interface IUsersState extends IAjaxState<IUser> {}
+
+const initialUsersState: IUsersState = {
   all: {},
+  ids: [],
+  touched: false,
+  loading: false,
+  errors: []
+}
+```
+
+#### `ISelectableState`
+
+Add a `selected` property on top of `IBaseState`.
+
+Example:
+
+```ts
+interface IUser {
+  id: number
+  name: string
+}
+
+interface ISelectableUsersState extends ISelectableState<IUser> {}
+
+const initialUsersState: ISelectableUsersState = {
+  all: {},  
+  ids: [],
   selectedId: null
 }
-
-const projectsReducer = (state = initialProjectsState, action): IBaseState<IProject> => {
-  return state
-}
 ```
 
-A simple utility function can is included get the currently selected project:
+#### `ISelectableAjaxState`
+
+An `IBaseState` that extends `IAjaxState` and `ISelectableState`.
+
+### Helpers
+
+#### `mapEntities`
+
+Returns an array of whatever interface is passed to `IBaseState`.
+
+Example:
 
 ```ts
-function selectedEntity<T>(state: ISelectableState<T>): T | null {
-  if (!state.selectedId) {
-    return null
+const usersState: IBaseState<IUser> = {
+  ids: [1],
+  all: {
+    1: {
+      id: 1,
+      name: 'Alice'
+    }
   }
 }
+
+const users = mapEntities(usersState) // [{ id: 1, name: 'Alice' }]
+                        // `mapEntities` is generic and infers that `users` is of type `IUser[]`
 ```
 
-Since `selectedEntity` is generic, we get correct type inference, too!
+#### `selectedEntity`
+
+Returns the currently selected entity of a `ISelectableState`, or null if there isn't one.
+
+Example: 
 
 ```ts
-const project = selectedEntity(store.getState().projects) // project is inferred as an IProject
-```
-
-## Ajax State
-
-We don't want to fetch all the tasks when the app is loaded - that wouldn't be very performant. We will fetch them asynchrously, when a project is selected. This introduces the next interface, `IAjaxState`. When loading some data from a server, there are three states to consider:
-
-1. The initial state. No request has been made, no data has been fetched.
-2. The request has been initiated, but is yet to complete. Show a spinner.
-3. The request has completed - either an error occurred, or the request was successful and we now have the data.
-
-The `IAjaxState` looks like this:
-
-```ts
-interface IAjaxState<T, ErrorType = string> extends IBaseState<T> {
-  loading: boolean
-  touched: boolean
-  errors: ErrorType[]
+const usersState: ISelectableState<IUser> = {
+  selectedId: 1,
+  ids: [1],
+  all: {
+    1: {
+      id: 1,
+      name: 'Alice'
+    }
+  }
 }
+
+const user = selectedEntity(usersState) // { id: 1, name: 'Alice' } // `user` in inferred to be of type `IUser`
 ```
 
-There are three helper functions I use to figure out which of three states the entity is in, and update the UI accordingly.
+#### `isLoaded`
 
-- If `touched` is false, we know that slice of the store is in it's initial state - no request has been made. This is useful for initializing the first API call 
-- If the `loading` is `true`, we know the API call has been initiated, and we can display a spinner. 
-- When `touched` is `true` and `loading` is false, the API calls has finished. If:
-  - if `errors` if empty, the API call was successful.
-  - however if `errors.length > 0`, an error occurred.
+Helper to determine state of a slice of the store that extends `IAjaxState` has finishing loading. Basically just checks if the store is _not_ in the initial state (`touched = false`) and `loading` is `false`.
 
-Three helper functions are provided to determine which state your application is in: `isLoading`, `isLoaded` and `isErrorState`.
+```ts
+interface IUsersState extends IAjaxState<IUser> {}
+
+const initialUsersState: IUsersState = {
+  all: {},
+  ids: [],
+  touched: true,
+  loading: false,
+  errors: []
+}
+
+isLoaded(initialUsersState) // true
+```
+
+#### `isLoading`
+
+Helper to determine state of a slice of the store that extends `IAjaxState` is currently loading some data. Basically just checks if the store has not in an error state (for example, the API request has failed) and `loading` is `true`.
+
+```ts
+interface IUsersState extends IAjaxState<IUser> {}
+
+const initialUsersState: IUsersState = {
+  all: {},
+  ids: [],
+  touched: true,
+  loading: true,
+  errors: []
+}
+
+isLoading(initialUsersState) // true
+```
+
+#### `isErrorState`
+
+Helper to determine state of a slice of the store that extends `IAjaxState` has failed with an error (`errors.length > 0`).
+
+```ts
+interface IUsersState extends IAjaxState<IUser> {}
+
+const initialUsersState: IUsersState = {
+  all: {},
+  ids: [],
+  touched: true,
+  loading: false,
+  errors: ['An error has occurred']
+}
+
+isErrorState(initialUsersState) // true
+```
