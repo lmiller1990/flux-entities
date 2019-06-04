@@ -2,10 +2,14 @@
 
 See ARTICLE.md.
 
+## Specification
+
+See SPECIFICATION.md.
+
 ## Examples
 
-Redux, no UI framework: https://github.com/lmiller1990/flux-entities-demo
-React-Redux (and TypeScript): https://github.com/lmiller1990/flux-entities-react-demo
+- Redux, no UI framework: https://github.com/lmiller1990/flux-entities-demo
+- React-Redux (and TypeScript): https://github.com/lmiller1990/flux-entities-react-demo
 
 ## API
 
@@ -23,7 +27,7 @@ interface IUser {
   name: string
 }
 
-interface IUsersMap extends IEntityHashMap<IUser> // { [id: number]: IUser
+interface IUsersMap extends IEntityHashMap<IUser> // { [id: number]: IUser }
 ```
 
 #### `IBaseState`
@@ -41,6 +45,28 @@ interface IUser {
 interface IUsersState extends IBaseState<IUser> {
   ids: number[]
   all: IEntityHashMap<IUser>
+}
+```
+
+If you are using Redux, a reducer might look like this:
+
+```ts
+interface IUsersState extends IBaseState<IUser> {}
+
+const initialState: IUsersState = {
+  ids: [],
+  all: {}
+}
+
+const usersReducer = (state: IUsersState = initialState, action): IUsersState => {
+  if (action.type === 'SET_USERS') {
+    return action.payload.reduce<IUsersState>((acc, curr) => {
+      return {
+        ids: Array.from(new Set([...acc.ids, curr.id])),
+        all: { ...acc.all, [curr.id]: curr }
+      }
+    }, { ...state })
+  }
 }
 ```
 
@@ -67,6 +93,56 @@ const initialUsersState: IUsersState = {
 }
 ```
 
+In Redux, an example action/reduce might look like this:
+
+```ts
+// Action
+const fetchTasks = (projectId: number): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+      dispatch(fetchTasksRequest())
+    try {
+      const response = await axios.get<ITask[]>(`http://localhost:8080/tasks?projectId=${projectId}`)
+      dispatch(fetchTasksSuccess(response.data))
+    } catch (e) {
+      dispatch(fetchTasksFailure((e as AxiosError).message))
+    }
+  }
+}
+
+// Reducer
+const tasksReducer = (state: ITasksState = initialState, action): ITasksState => {
+  if (action.type === 'tasksFetchRequest') {
+    return {
+      ...state,
+      loading: true,
+      touched: true,
+      errors: []
+    }
+  }
+
+  if (action.type === 'tasksFetchSuccess') {
+    return action.payload.reduce<ITasksState>((acc, curr) => {
+      return {
+        ...state,
+        loading: false,
+        ids: Array.from(new Set([...acc.ids, curr.id])),
+        all: { ...acc.all, [curr.id]: curr }
+      }
+    }, { ...state })
+  }
+
+  if (action.type === 'tasksFetchFailure') {
+    return {
+      ...state,
+      loading: false,
+      errors: [action.payload],
+    }
+  }
+
+  return state
+}
+```
+
 #### `ISelectableState`
 
 Add a `selected` property on top of `IBaseState`.
@@ -88,11 +164,34 @@ const initialUsersState: ISelectableUsersState = {
 }
 ```
 
+In Redux, an reducer might look like this:
+
+```ts
+interface IProjectsState extends ISelectableState<IProject> {}
+
+const initialState: IProjectsState = {
+  ids: [],
+  all: {},
+  selectedId: null
+}
+
+const projectsReducer = (state: IProjectsState = initialState, action): IProjectsState => {
+  if (action.type === 'setSelectedProject') {
+    return {
+      ...state,
+      selectedId: action.payload
+    }
+  }
+}
+```
+
 #### `ISelectableAjaxState`
 
 An `IBaseState` that extends `IAjaxState` and `ISelectableState`.
 
 ### Helpers
+
+These helpers assume you are following the specification and implementing your actions and reducers/mutations as described above.
 
 #### `mapEntities`
 
@@ -112,7 +211,8 @@ const usersState: IBaseState<IUser> = {
 }
 
 const users = mapEntities(usersState) // [{ id: 1, name: 'Alice' }]
-                        // `mapEntities` is generic and infers that `users` is of type `IUser[]`
+                                      // `mapEntities` is generic and 
+                                      // infers that `users` is of type `IUser[]`
 ```
 
 #### `selectedEntity`
@@ -133,7 +233,8 @@ const usersState: ISelectableState<IUser> = {
   }
 }
 
-const user = selectedEntity(usersState) // { id: 1, name: 'Alice' } // `user` in inferred to be of type `IUser`
+const user = selectedEntity(usersState) // { id: 1, name: 'Alice' } 
+                                        // `user` in inferred to be of type `IUser`
 ```
 
 #### `isLoaded`
