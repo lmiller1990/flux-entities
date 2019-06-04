@@ -1,11 +1,12 @@
 {
   "name": "flux-entities",
   "devDependencies": {
-    "ts-node": "^8.2.0"
+    "ts-node": "^8.2.0",
+    "typescript": "^3.5.1"
   },
   "scripts": {
     "build": "yarn tsc --outDir dist --declaration"
   },
   "main": "dist/index.js",
-  "version": "0.0.4"
+  "version": "0.0.5"
 }
