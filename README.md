@@ -22,6 +22,7 @@ See SPECIFICATION.md.
 ## Examples
 
 - React-Redux (and TypeScript): https://github.com/lmiller1990/flux-entities-react-demo
+- Vue-Vuex (and TypeScript): https://github.com/lmiller1990/flux-entities-vue-demo
 - Redux, no UI framework: https://github.com/lmiller1990/flux-entities-demo
 
 ## API
