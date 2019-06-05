@@ -1,6 +1,19 @@
 ## Motivation
 
-See ARTICLE.md.
+The flux entity pattern, is a common pattern I identified and extracted over the last few years of working on various single page apps, mainly in Vue and React, using Vuex and Redux respectively. This pattern, however is applicable to any flux library, and likely state management paradigms.
+
+Specifically, this pattern lays out some common rules for how you should structure the state of your flux store. When coupled a strongly typed language like TypeScript, it becomes even easily to implement.
+
+The basic idea is each "slice" of the store has the same shape, constructed using a combination of the following properties, depending what is kind of data is stored:
+
+- `all`
+- `ids`
+- `loading`
+- `loaded`
+- `errors`
+- `selectedId`
+
+This library provides a number of type definitions and utilities functions to help you structure and manage your flux store's state. By having a common structure for each slice of the store, applications are easily to understand and reason about. Furthermore, common helper functions and utilties can be extracted.
 
 ## Specification
 
@@ -8,8 +21,8 @@ See SPECIFICATION.md.
 
 ## Examples
 
-- Redux, no UI framework: https://github.com/lmiller1990/flux-entities-demo
 - React-Redux (and TypeScript): https://github.com/lmiller1990/flux-entities-react-demo
+- Redux, no UI framework: https://github.com/lmiller1990/flux-entities-demo
 
 ## API
 
