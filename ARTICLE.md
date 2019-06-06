@@ -1,12 +1,16 @@
 ## The Flux Entity Pattern
 
-The flux entity pattern, or simply the _entity_ pattern, is a common pattern I identified and extracted over the last few years of working on various single page apps, mainly in Vue and React, using Vuex and Redux respectively. This pattern, however is applicable to any flux library, and likely state management paradigms.
+The flux entity pattern, or simply the _entity_ pattern, is a common pattern I identified and extracted over the last few years of working on various single page apps, mainly in Vue and React, using Vuex and Redux respectively. This pattern, however is applicable to any flux library, and likely state management paradigms. I extracted some useful type definitions and utilities functions into a library called `flux-entities`, found [here](https://github.com/lmiller1990/flux-entities).
 
-Specifically, this pattern lays out some common rules for how you should structure the state of your flux store. When coupled with TypeScript, it becomes even easily to implement, however the same ideas apply to regular JavaScript. This article will build a small application (well, at least the flux store for one) and demonstrate why this pattern is useful. Having some basic guidelines for how you structure each slice of the state makes it easier to scale applications, on board new developers, and reason about the codebase in general. 
+Specifically, this pattern lays out some common rules for how you should structure the state of your flux store. When coupled with TypeScript, it becomes even easily to implement, however the same ideas apply to regular JavaScript.
+
+This article will describe a small application (well, at least the flux store for one) and demonstrate why this pattern is useful. Having some basic guidelines for how you structure each slice of the state makes it easier to scale applications, on board new developers, and reason about the codebase in general. Working examples in React, Vue and vanilla JS can be found on the [library's GitHub page](https://github.com/lmiller1990/flux-entities).
 
 ## The Tutorial
 
-To illustrate the concepts and introduce the API for the `flux-entities`, we will discuss and design the state of a store of a generic project management tool. There will be three "slices" of state in our store in our flux store: `users`, `projects` and `tasks`. For the benefit of explaining the `flux-entities` library, users will be loaded synchronously. Projects are also loaded asynchronously, and at any one time a single project can be "selected". Tasks are loaded asynchronously (when a project is selected, for example).
+To illustrate the concepts and introduce the API for the `flux-entities`, we will discuss and design the state of a store of a generic project management tool. You can read the full documentation and source code [here](https://github.com/lmiller1990/flux-entities).
+
+There will be three "slices" of state in our store in our flux store: `users`, `projects` and `tasks`. For the benefit of explaining the `flux-entities` library, users will be loaded synchronously. Projects are also loaded asynchronously, and at any one time a single project can be "selected". Tasks are loaded asynchronously (when a project is selected, for example).
 
 When using `flux-entities`, all reducers start from the same base shape, extending various interfaces where needed. The bulk of the work from now on will be introducing the types that are used in the flux entity pattern, and why they are used.
 
