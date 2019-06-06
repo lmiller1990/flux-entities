@@ -9,7 +9,7 @@ The basic idea is each "slice" of the store has the same shape, constructed usin
 - `all`
 - `ids`
 - `loading`
-- `loaded`
+- `touched`
 - `errors`
 - `selectedId`
 
