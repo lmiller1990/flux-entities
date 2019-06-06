@@ -11,15 +11,30 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 exports.__esModule = true;
-exports.baseState = {
-    ids: [],
-    all: {}
-};
-exports.selectableState = __assign({}, exports.baseState, { selectedId: null });
-exports.ajaxState = {
-    touched: false,
-    loading: false,
-    errors: false
-};
-exports.ajaxBaseState = __assign({}, exports.baseState, exports.ajaxState);
-exports.selectableAjaxBaseState = __assign({}, exports.baseState, exports.ajaxState, exports.selectableState);
+function baseState() {
+    return {
+        ids: [],
+        all: {}
+    };
+}
+exports.baseState = baseState;
+function selectableState() {
+    return __assign({}, baseState(), { selectedId: null });
+}
+exports.selectableState = selectableState;
+function ajaxState() {
+    return {
+        touched: false,
+        loading: false,
+        errors: []
+    };
+}
+exports.ajaxState = ajaxState;
+function ajaxBaseState() {
+    return __assign({}, baseState(), ajaxState());
+}
+exports.ajaxBaseState = ajaxBaseState;
+function selectableAjaxBaseState() {
+    return __assign({}, baseState(), ajaxState(), selectableState());
+}
+exports.selectableAjaxBaseState = selectableAjaxBaseState;
