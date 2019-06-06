@@ -1,6 +1,6 @@
 ## Motivation
 
-The flux entity pattern, or simply the _entity_ pattern, is a common pattern I identified and extracted over the last few years of working on various single page apps, mainly in Vue and React, using Vuex and Redux respectively. This pattern, however is applicable to any flux library, and likely state management paradigms.
+The flux entity pattern, or simply the _entity_ pattern, is a common pattern I identified and extracted over the last few years of working on various single page apps, mainly in Vue and React, using Vuex and Redux respectively. This pattern, however is applicable to any flux library, and likely state management paradigms. This is the official library and reference implementation for the pattern.
 
 Specifically, this pattern lays out some common rules for how you should structure the state of your flux store. When coupled with TypeScript, it becomes even easily to implement, however the same ideas apply to regular JavaScript. This article will build a small application (well, at least the flux store for one) and demonstrate why this pattern is useful. Having some basic guidelines for how you structure each slice of the state makes it easier to scale applications, on board new developers, and reason about the codebase in general. 
 
@@ -13,11 +13,16 @@ The basic idea is each "slice" of the store has the same shape, constructed usin
 - `errors`
 - `selectedId`
 
-This library provides a number of type definitions and utilities functions to help you structure and manage your flux store's state. By having a common structure for each slice of the store, applications are easily to understand and reason about. Furthermore, common helper functions and utilties can be extracted.
+This library provides a number of type definitions and utilities functions to help you structure and manage your flux store's state. By having a common structure for each slice of the store, applications are easily to understand and reason about. Furthermore, common helper functions and utilities can be extracted.
 
 ## Tutorial
 
-See ARTICLE.md for a tutorial explaining the different use cases for the API described below.
+## Installation
+
+Yarn: `yarn add flux-entities`
+NPM: `npm install flux-entities --save`
+
+See [ARTICLE.md](https://github.com/lmiller1990/flux-entities/blob/master/ARTICLE.md) for a tutorial explaining the different use cases for the API described below.
 
 ## Specification
 

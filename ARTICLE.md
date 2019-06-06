@@ -6,7 +6,7 @@ Specifically, this pattern lays out some common rules for how you should structu
 
 ## The Tutorial
 
-To illustrate the concepts and introduce the API for the `flux-entities`, we will discuss and design the state of a store of a generic project management tool. There will be three "slices" of state in our store in our flux store: `users`, `projects` and `tasks`. For the benefit of explaining the `flux-entities` library, users will be loaded synchronously. Projects are also loaded asynchronosly, and at any one time a single project can be "selected". Tasks are loaded asynchronously (when a project is selected, for example).
+To illustrate the concepts and introduce the API for the `flux-entities`, we will discuss and design the state of a store of a generic project management tool. There will be three "slices" of state in our store in our flux store: `users`, `projects` and `tasks`. For the benefit of explaining the `flux-entities` library, users will be loaded synchronously. Projects are also loaded asynchronously, and at any one time a single project can be "selected". Tasks are loaded asynchronously (when a project is selected, for example).
 
 When using `flux-entities`, all reducers start from the same base shape, extending various interfaces where needed. The bulk of the work from now on will be introducing the types that are used in the flux entity pattern, and why they are used.
 
@@ -18,8 +18,8 @@ The users data might look looks like this:
 
 ```json
 [
-  { id: 1, name: 'Alice' }
-  { id: 2, name: 'Bob' }
+  { "id": 1, name: "Alice" }
+  { "id": 2, name: "Bob" }
 ]
 ```
 
