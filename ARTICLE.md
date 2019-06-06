@@ -6,15 +6,24 @@ Specifically, this pattern lays out some common rules for how you should structu
 
 ## The Application
 
-The application we build is for a generic project management tool. There will be three entities in our flux store: users, projects and tasks. As expected, a users can have projects, a project has tasks, and users are assigned to tasks. We want to state to be as flat an flexible as possible, to let us have maximum flexiblity when building the UI. The state of your SPA should not be domain specific, but as loosely coupled as possible.
-
-## Defining the Reducer State
+The application we will design a store for is for a generic project management tool. There will be three entities in our flux store: users, projects and tasks. As expected, a users can have projects, a project has tasks, and users are assigned to tasks. We want to state to be as flat an flexible as possible, to let us have maximum flexiblity when building the UI. The state of your SPA should not be domain specific, but as loosely coupled as possible.
 
 In the flux entity pattern, all reducers start from the same base shape, extending various interfaces where needed. The bulk of the work from now on will be introducing the types that are used in the flux entity pattern, and why they are used.
 
-## The Base State
+## The `users` State
 
-This base shape looks like this:
+For the purpose of this article, we will pretend the data for the users is the following JSON object, hardcoded in the application. When we design the projects and tasks states, we will see how to handle asynchronous loading using the `flux-entities` library.
+
+Users looks like this:
+
+```json
+[
+  { id: 1, name: 'Alice' }
+  { id: 2, name: 'Bob' }
+]
+```
+
+For a state that simply stores some data that is loaded in a non asynchronous fashion, `flux-entities` provides the `IBaseState` interface, which is defined like this:
 
 ```ts
 interface IEntityHashMap<T> {
@@ -27,7 +36,7 @@ interface IBaseState<T> {
 }
 ```
 
-This is already a great start. Accessing a single entity is a more common need than iterting over the entire collection. If you simply store all the entities in an array, whenever you want a specific one, you need to iterate over each element, checking some key (usually an id). With the hashmap, we simply do `users.all[id]` to retrieve a specific user's details.By storing the actual data in a hash map, looking up a user is a O(n) operation. 
+Accessing a single entity is a more common need than iterating over the entire collection. If you simply store all the entities in an array, whenever you want a specific one, you need to iterate over each element, checking some key (usually an id). With the hashmap, we simply do `users.all[id]` to retrieve a specific user's details.By storing the actual data in a hash map, looking up a user is a O(n) operation. 
 
 If you do want to iterate over them (for example, if we want to show an entire list of projects) you would simply do:
 
@@ -59,9 +68,21 @@ const users = mapEntities(store.getState.users)
 
 `mapEntities` signature looks is: `mapEntities<T>(state: IBaseState<T>) => T[]` - it's generic, so in the example above, `users` will be inferred to be `IUser[]`!
 
-## Selectable State
+Now you `mapStateToProps` function would just be:
 
-Often, applications will display a list of items, allowing the user to choose one and see more detail. In the application I'm describing, we show a list of projects, and a user can choose one. This is handled by extending  `ISelectableState` in the flux entity pattern:
+```ts
+const mapStateToProps = (state: State): Props => {
+  return {
+    users: mapEntities(state.users)
+  }
+}
+```
+
+And you component can receive an array of `IUser`.
+
+## The `projects` state
+
+Often, applications will display a list of items, allowing the user to choose one and see more detail. In the application we are designing the store for, we show a list of projects, and a user can choose one. `flux-entities` provides the `ISelectableState` interface for this purpose.
 
 ```ts
 interface ISelectableState<T> extends IBaseState<T> {
@@ -81,10 +102,6 @@ const initialProjectsState: IProjectsState = {
   all: {},
   selectedId: null
 }
-
-const projectsReducer = (state = initialProjectsState, action): IBaseState<IProject> => {
-  return state
-}
 ```
 
 A simple utility function can is included get the currently selected project:
@@ -103,9 +120,9 @@ Since `selectedEntity` is generic, we get correct type inference, too!
 const project = selectedEntity(store.getState().projects) // project is inferred as an IProject
 ```
 
-## Ajax State
+## The `tasks` state
 
-We don't want to fetch all the tasks when the app is loaded - that wouldn't be very performant. We will fetch them asynchrously, when a project is selected. This introduces the next interface, `IAjaxState`. When loading some data from a server, there are three states to consider:
+We don't want to fetch all the tasks when the app is loaded - that wouldn't scale in terms of performance. We will fetch them asynchronously, when a project is selected. This introduces the `IAjaxState`, another part of `flux-entities`. When loading some data from a server, there are three states to consider:
 
 1. The initial state. No request has been made, no data has been fetched.
 2. The request has been initiated, but is yet to complete. Show a spinner.
@@ -121,6 +138,20 @@ interface IAjaxState<T, ErrorType = string> extends IBaseState<T> {
 }
 ```
 
+So the shape of the `tasks` state will be like this:
+
+```ts
+interface ITasksState extends IAjaxState<ITask> {}
+
+const initialTasksState: ITasksState = {
+  loading: false
+  touched: false, 
+  loaded: false,
+  all: {},
+  ids: []
+}
+```
+
 There are three helper functions I use to figure out which of three states the entity is in, and update the UI accordingly.
 
 - If `touched` is false, we know that slice of the store is in it's initial state - no request has been made. This is useful for initializing the first API call 
@@ -129,4 +160,4 @@ There are three helper functions I use to figure out which of three states the e
   - if `errors` if empty, the API call was successful.
   - however if `errors.length > 0`, an error occurred.
 
-Three helper functions are provided to determine which state your application is in: `isLoading`, `isLoaded` and `isErrorState`.
+`flux-entities` bundles these three helper functions, called `isLoading`, `isLoaded` and `isErrorState` accordingly.
