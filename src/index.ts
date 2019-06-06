@@ -1,9 +1,10 @@
 import {
-  IAjaxState,
   IBaseState,
-  IEntityHashMap,
   ISelectableState,
-  ISelectableAjaxState,
+  IAjaxState,
+  IAjaxBaseState,
+  ISelectableAjaxBaseState,
+  IEntityHashMap,
 } from './types'
 
 import {
@@ -14,16 +15,31 @@ import {
   selectedEntity,
 } from './selectors'
 
+import {
+  baseState,
+  selectableState,
+  ajaxState,
+  ajaxBaseState,
+  selectableAjaxBaseState
+} from './states'
+
 export {
   IAjaxState,
   IBaseState,
   IEntityHashMap,
   ISelectableState,
-  ISelectableAjaxState,
+  IAjaxBaseState,
+  ISelectableAjaxBaseState,
 
   isLoaded,
   isLoading,
   isErrorState,
   mapEntities,
   selectedEntity,
+
+  baseState,
+  selectableState,
+  ajaxState,
+  ajaxBaseState,
+  selectableAjaxBaseState
 }
