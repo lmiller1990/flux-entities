@@ -1,6 +1,7 @@
 ## The Flux Entity Pattern
 
-The flux entity pattern, or simply the _entity_ pattern, is a common pattern I identified and extracted over the last few years of working on various single page apps, mainly in Vue and React, using Vuex and Redux respectively. This pattern, however is applicable to any flux library, and likely state management paradigms. I extracted some useful type definitions and utilities functions into a library called `flux-entities`, found [here](https://github.com/lmiller1990/flux-entities).
+The flux entity pattern aims to simply the design and implementation of flux stores, such as Redux or Vuex. It is based on common patterns I identified and extracted over the last few years of working on various single page apps, mainly in Vue and React, using Vuex and Redux respectively. This pattern is applicable to any flux library, and likelyother state management paradigms. I extracted some useful type definitions and utilities functions into a library called `flux-entities`, found [here](https://github.com/lmiller1990/flux-entities).
+o
 
 Specifically, this pattern lays out some common rules for how you should structure the state of your flux store. When coupled with TypeScript, it becomes even easily to implement, however the same ideas apply to regular JavaScript.
 
@@ -34,7 +35,7 @@ interface IUser {
   id: number
   name: string
 }
-````
+```
 
 For a state that simply stores some data that is loaded in a non asynchronous fashion, `flux-entities` provides the `IBaseState` interface, which is defined like this:
 
@@ -322,3 +323,7 @@ export {
   Tasks
 }
 ```
+
+## Conclusion
+
+The flux entities pattern is one way to enforce a common structure across your flux stores. By having a consistent, defined methodolgy, applications are more scalable, onboarding is easier, and the codebase can be more easily reasonable about. [`flux-entities`](https://github.com/lmiller1990/flux-entities) provides type definitions and helper functions, adhering the the patterns described in this article and in more detail on the library's GitHub page.
