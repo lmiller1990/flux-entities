@@ -1,26 +1,44 @@
-export const baseState = {
-  ids: [],
-  all: {}
+import {
+  IBaseState,
+  ISelectableState,
+  IAjaxState,
+  IAjaxBaseState,
+  ISelectableAjaxBaseState
+ } from './types'
+
+export function baseState<T>(): IBaseState<T> {
+  return {
+    ids: [],
+    all: {}
+  }
 }
 
-export const selectableState = {
-  ...baseState,
-  selectedId: null
+export function selectableState<T>(): ISelectableState<T> {
+  return {
+    ...baseState<T>(),
+    selectedId: null
+  }
 }
 
-export const ajaxState = {
-  touched: false,
-  loading: false,
-  errors: false
+export function ajaxState<ErrorType = string>(): IAjaxState<ErrorType> {
+  return {
+    touched: false,
+    loading: false,
+    errors: []
+  }
 }
 
-export const ajaxBaseState = {
-  ...baseState,
-  ...ajaxState
+export function ajaxBaseState<T, ErrorType = string>(): IAjaxBaseState<T, ErrorType> {
+  return {
+    ...baseState<T>(),
+    ...ajaxState<ErrorType>()
+  }
 }
 
-export const selectableAjaxBaseState = {
-  ...baseState,
-  ...ajaxState,
-  ...selectableState
+export function selectableAjaxBaseState<T, ErrorType = string>(): ISelectableAjaxBaseState<T, ErrorType> {
+  return {
+  ...baseState<T>(),
+  ...ajaxState<ErrorType>(),
+  ...selectableState<T>()
+  }
 }
