@@ -1,8 +1,8 @@
 ## Motivation
 
-The flux entity pattern, is a common pattern I identified and extracted over the last few years of working on various single page apps, mainly in Vue and React, using Vuex and Redux respectively. This pattern, however is applicable to any flux library, and likely state management paradigms.
+The flux entity pattern, or simply the _entity_ pattern, is a common pattern I identified and extracted over the last few years of working on various single page apps, mainly in Vue and React, using Vuex and Redux respectively. This pattern, however is applicable to any flux library, and likely state management paradigms.
 
-Specifically, this pattern lays out some common rules for how you should structure the state of your flux store. When coupled a strongly typed language like TypeScript, it becomes even easily to implement.
+Specifically, this pattern lays out some common rules for how you should structure the state of your flux store. When coupled with TypeScript, it becomes even easily to implement, however the same ideas apply to regular JavaScript. This article will build a small application (well, at least the flux store for one) and demonstrate why this pattern is useful. Having some basic guidelines for how you structure each slice of the state makes it easier to scale applications, on board new developers, and reason about the codebase in general. 
 
 The basic idea is each "slice" of the store has the same shape, constructed using a combination of the following properties, depending what is kind of data is stored:
 
@@ -15,11 +15,15 @@ The basic idea is each "slice" of the store has the same shape, constructed usin
 
 This library provides a number of type definitions and utilities functions to help you structure and manage your flux store's state. By having a common structure for each slice of the store, applications are easily to understand and reason about. Furthermore, common helper functions and utilties can be extracted.
 
+## Tutorial
+
+See ARTICLE.md for a tutorial explaining the different use cases for the API described below.
+
 ## Specification
 
-See SPECIFICATION.md.
+See SPECIFICATION.md (coming soon)
 
-## Examples
+## Example Projects
 
 - React-Redux (and TypeScript): https://github.com/lmiller1990/flux-entities-react-demo
 - Vue-Vuex (and TypeScript): https://github.com/lmiller1990/flux-entities-vue-demo
@@ -27,7 +31,7 @@ See SPECIFICATION.md.
 
 ## API
 
-### Types
+### Interfaces
 
 #### `IEntityHashMap`
 
@@ -86,21 +90,32 @@ const usersReducer = (state: IUsersState = initialState, action): IUsersState =>
 
 #### `IAjaxState`
 
-Adds `touched`, `loading` and `loaded` on top of `all` and `ids`. Useful for data loaded from an API.
+Provides `touched`, `loading` and `loaded`. Useful for data loaded from an API.
 
 Example:
 
 ```ts
-interface ITask {
-  id: number
-  title: string
-}
+interface ILoadingState extends IAjaxState {}
 
-interface ITasksState extends IAjaxState<ITask> {}
+const initialLoadingState: ILoadingState = {
+  touched: false,
+  loading: false,
+  errors: []
+}
+```
+
+A state containing just these three properties is not very useful, but you can add your own additional keys as you see fit (`IBaseState` is often used alongside `IAjaxState` - so much so there is a `IAjaxBaseState`, as described next).
+
+#### `IAjaxBaseState`
+
+A combination of `IBaseState` and `IAjaxState`. Maybe you are loading some tasks; the state could look like this:
+
+```ts
+interface ITasksState extends IAjaxBaseState<ITask> {}
 
 const initialTasksState: ITasksState = {
-  all: {},
   ids: [],
+  all: {},
   touched: false,
   loading: false,
   errors: []
@@ -203,13 +218,47 @@ const projectsReducer = (state: IProjectsState = initialState, action): IProject
 
 An `IBaseState` that extends `IAjaxState` and `ISelectableState`.
 
+### States
+
+Each of the above interfaces has an associated `state` function which returns the default initial state. This is to save you typing the same default state each time you add another slice to your store. For example, instead of:
+
+```ts
+const usersState: IAjaxBaseState<IUser> = {
+  ids: [],
+  all: {},
+  errors: [],
+  loading: false,
+  touched: false
+}
+```
+
+You can use the `ajaxBaseState` state function:
+
+```ts
+const usersState: IAjaxBaseState<IUser> = {
+  ...ajaxBaseState()
+}
+
+// or
+
+const usersState: IAjaxBaseState<IUser> = ajaxBaseState<IUse>()
+```
+
+The following state functions are provided:
+
+- `IBaseState` -> `baseState`
+- `ISelectableState -> `selectableState`
+- `IAjaxState -> `ajaxState`
+- `IAjaxBaseState -> `ajaxBaseState`
+- `ISelectableAjaxBaseState -> `selectableAjaxBaseState`
+
 ### Helpers
 
-These helpers assume you are following the specification and implementing your actions and reducers/mutations as described above.
+These helper functions derive commonly used data from states extended from the interfaces described above.
 
 #### `mapEntities`
 
-Returns an array of whatever interface is passed to `IBaseState`.
+Returns an array of the interface is passed to `IBaseState`.
 
 Example:
 
