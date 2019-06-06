@@ -146,7 +146,7 @@ interface ITasksState extends IAjaxState<ITask> {}
 const initialTasksState: ITasksState = {
   loading: false
   touched: false, 
-  loaded: false,
+  errors: [],
   all: {},
   ids: []
 }
