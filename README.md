@@ -15,12 +15,12 @@ The basic idea is each "slice" of the store has the same shape, constructed usin
 
 This library provides a number of type definitions and utilities functions to help you structure and manage your flux store's state. By having a common structure for each slice of the store, applications are easily to understand and reason about. Furthermore, common helper functions and utilities can be extracted.
 
-## Tutorial
-
 ## Installation
 
-Yarn: `yarn add flux-entities`
-NPM: `npm install flux-entities --save`
+- Yarn: `yarn add flux-entities`
+- NPM: `npm install flux-entities --save`
+
+## The Tutorial
 
 See [ARTICLE.md](https://github.com/lmiller1990/flux-entities/blob/master/ARTICLE.md) for a tutorial explaining the different use cases for the API described below.
 
