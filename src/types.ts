@@ -1,14 +1,14 @@
 export interface IEntityHashMap<T> {
-    [id: number]: T
+  [k: string]: T
 }
 
 export interface IBaseState<T> {
-    ids: number[]
+    ids: Array<number | string>
     all: IEntityHashMap<T>
 }
 
 export interface ISelectableState<T> extends IBaseState<T> {
-  selectedId: number | null
+  selectedId: number | string | null
 }
 
 export interface IAjaxState<ErrorType = string> {
