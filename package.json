@@ -8,5 +8,5 @@
     "build": "yarn tsc --outDir dist --declaration"
   },
   "main": "dist/index.js",
-  "version": "0.0.9"
+  "version": "0.0.10"
 }
