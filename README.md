@@ -252,10 +252,10 @@ const usersState: IAjaxBaseState<IUser> = ajaxBaseState<IUse>()
 The following state functions are provided:
 
 - `IBaseState` -> `baseState`
-- `ISelectableState -> `selectableState`
-- `IAjaxState -> `ajaxState`
-- `IAjaxBaseState -> `ajaxBaseState`
-- `ISelectableAjaxBaseState -> `selectableAjaxBaseState`
+- `ISelectableState` -> `selectableState`
+- `IAjaxState` -> `ajaxState`
+- `IAjaxBaseState` -> `ajaxBaseState`
+- `ISelectableAjaxBaseState` -> `selectableAjaxBaseState`
 
 ### Helpers
 
