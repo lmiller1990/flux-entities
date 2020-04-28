@@ -31,35 +31,35 @@ The users data might look looks like this:
 And the corresponding interface will look like:
 
 ```ts
-interface IUser {
+interface User {
   id: number
   name: string
 }
 ```
 
-For a state that simply stores some data that is loaded in a non asynchronous fashion, `flux-entities` provides the `IBaseState` interface, which is defined like this:
+For a state that simply stores some data that is loaded in a non asynchronous fashion, `flux-entities` provides the `BaseState` interface, which is defined like this:
 
 ```ts
-interface IEntityHashMap<T> {
+interface EntityMap<T> {
     [id: number]: T
 }
 
-interface IBaseState<T> {
+interface BaseState<T> {
     id: number[]
-    all: IEntityHashMap<T>
+    all: EntityMap<T>
 }
 ```
 
-We can extend from `IBaseState` and define the `users` state:
+We can extend from `BaseState` and define the `users` state:
 
 ```ts
-interface IUsersState extends IBaseState<IUser> {}
+interface UsersState extends BaseState<User> {}
 ```
 
-`flux-entities` also includes factory functions to initialize the initial state. Since we are extending from `IBaseState`, we can use the `baseState` function to initialize the state:
+`flux-entities` also includes factory functions to initialize the initial state. Since we are extending from `BaseState`, we can use the `baseState` function to initialize the state:
 
 ```ts
-const initialUsersState: IUserState = baseState<IUser>() 
+const initialUsersState: UserState = baseState<User>() 
 // This creates the following:
 // {
 //   ids: [],
@@ -69,7 +69,7 @@ const initialUsersState: IUserState = baseState<IUser>()
 
 Accessing a single entity is a more common need than iterating over the entire collection. This is why storing the data in a hashmap, `all`, is useful. 
 
-If you store all the entities in an array, for example `state.users` where `users` is `IUser[]`, whenever you want a specific one, you need to iterate over each element, checking some key (usually an id). This has a complexity of O(n) With the hashmap, we simply do `users.all[id]` to retrieve a specific user's details. By storing the actual data in a hash map, looking up a user is a O(1) operation.
+If you store all the entities in an array, for example `state.users` where `users` is `User[]`, whenever you want a specific one, you need to iterate over each element, checking some key (usually an id). This has a complexity of O(n) With the hashmap, we simply do `users.all[id]` to retrieve a specific user's details. By storing the actual data in a hash map, looking up a user is a O(1) operation.
 
 If you do want to iterate over them (for example, if we want to show an entire list of projects) you would simply do:
 
@@ -99,7 +99,7 @@ Looping over the `ids` and access the actual data in the `all` hashmap is not th
 const users = mapEntities(store.getState.users)
 ```
 
-`mapEntities` signature looks is: `mapEntities<T>(state: IBaseState<T>) => T[]` - it's generic, so in the example above, `users` will be inferred to be `IUser[]`.
+`mapEntities` signature looks is: `mapEntities<T>(state: BaseState<T>) => T[]` - it's generic, so in the example above, `users` will be inferred to be `User[]`.
 
 Now your `mapStateToProps` function would just be:
 
@@ -111,26 +111,26 @@ const mapStateToProps = (state: State): Props => {
 }
 ```
 
-And you component will receive an array of `IUser` as `props.users`.
+And you component will receive an array of `User` as `props.users`.
 
 ## The `projects` state
 
-Often, applications will display a list of items, allowing the user to choose one and see more detail. In the application we are designing the store for, we show a list of projects, and a user can choose one. `flux-entities` provides the `ISelectableState` interface for this purpose.
+Often, applications will display a list of items, allowing the user to choose one and see more detail. In the application we are designing the store for, we show a list of projects, and a user can choose one. `flux-entities` provides the `SelectableState` interface for this purpose.
 
 ```ts
-interface ISelectableState<T> extends IBaseState<T> {
+interface SelectableState<T> extends BaseState<T> {
   selectedId: number | null
 }
 ```
 
-If a project is selected, `selectedId` is the `id` of the project. If not, it is `null` - as opposed to `undefined`. I prefer `null` it's more explicit. By extending `IBaseState`, `ids` and `all` keys are also included.
+If a project is selected, `selectedId` is the `id` of the project. If not, it is `null` - as opposed to `undefined`. I prefer `null` it's more explicit. By extending `BaseState`, `ids` and `all` keys are also included.
 
 The project state could look like this:
 
 ```ts
-interface IProjectsState extends ISelectableState<IProject> {}
+interface ProjectsState extends SelectableState<Project> {}
 
-const initialProjectsState: IProjectsState = {
+const initialProjectsState: ProjectsState = {
   ids: [],
   all: {},
   selectedId: null
@@ -142,35 +142,35 @@ Of course, you are free to add additional keys to the state - `flux-entities` ju
 A utility function is included get the currently selected project, `selectedEntity`:
 
 ```ts
-const currentProject = selectedEntity(store.getState().projects) // project is inferred as an IProject
+const currentProject = selectedEntity(store.getState().projects) // project is inferred as an Project
 ```
 
 As with the users example, you can use the `selectableBaseState()` function to initialize the state.
 
 ## The `tasks` state
 
-We don't want to fetch all the tasks when the app is loaded - that wouldn't scale in terms of performance. We will fetch them asynchronously, when a project is selected. This introduces the `IAjaxState`, another part of `flux-entities`. When loading some data from a server, there are three states to consider:
+We don't want to fetch all the tasks when the app is loaded - that wouldn't scale in terms of performance. We will fetch them asynchronously, when a project is selected. This introduces the `AjaxState`, another part of `flux-entities`. When loading some data from a server, there are three states to consider:
 
 1. The initial state. No request has been made, no data has been fetched.
 2. The request has been initiated, but is yet to complete. Show a spinner.
 3. The request has completed - either an error occurred, or the request was successful and we now have the data.
 
-The `IAjaxState` definition looks like this:
+The `AjaxState` definition looks like this:
 
 ```ts
-interface IAjaxState<T, ErrorType = string> {
+interface AjaxState<T, ErrorType = string> {
   loading: boolean
   touched: boolean
   errors: ErrorType[]
 }
 ```
 
-For our `tasks` state, we want to store entities, as well as handle asynchronous behaviour. We can use `IAjaxBaseState` - an interface extending both `IAjaxState` and `IBaseState`. The shape of the `tasks` state will be like this:
+For our `tasks` state, we want to store entities, as well as handle asynchronous behaviour. We can use `AjaxBaseState` - an interface extending both `AjaxState` and `BaseState`. The shape of the `tasks` state will be like this:
 
 ```ts
-interface ITasksState extends IAjaxBaseState<ITask> {}
+interface TasksState extends AjaxBaseState<Task> {}
 
-const initialTasksState: ITasksState = {
+const initialTasksState: TasksState = {
   loading: false
   touched: false, 
   errors: [],
@@ -189,19 +189,19 @@ Using `touched`, `errors` and `loading` we can figure out the state of the appli
   - if `errors` if empty, the API call was successful. No need to do anything.
   - if `errors.length > 0`, an error occurred. Update the application accordingly.
 
-`flux-entities` bundles these three helper functions, called `isLoading`, `isLoaded` and `isErrorState`, to help determine out the current state.
+`flux-entities` bundles these three helper functions, called `isLoading`, `isLoaded` and `hasError`, to help determine out the current state.
 
 ### A Full Example (`tasks` state)
 
 The reducer for `tasks` might look something like this:
 
 ```ts
-import { IAjaxBaseState } from 'flux-entities'
+import { AjaxBaseState } from 'flux-entities'
 
-interface ITasksState extends IAjaxBaseState<ITask> {}
-const initialState: ITasksState = ajaxBaseState<ITask>()
+interface TasksState extends AjaxBaseState<Task> {}
+const initialState: TasksState = ajaxBaseState<Task>()
 
-const tasksReducer = (state: ITasksState = initialState, action): ITasksState => {
+const tasksReducer = (state: TasksState = initialState, action): TasksState => {
   if (action.type === 'tasksFetchRequest') {
     return {
       ...state,
@@ -213,7 +213,7 @@ const tasksReducer = (state: ITasksState = initialState, action): ITasksState =>
 
   if (action.type === 'tasksFetchSuccess') {
     return (
-      action.payload.reduce<ITasksState>((acc, curr) => {
+      action.payload.reduce<TasksState>((acc, curr) => {
         return {
           ...state,
           loading: false,
@@ -233,7 +233,7 @@ const tasksReducer = (state: ITasksState = initialState, action): ITasksState =>
   }
 
   if (action.type === 'tasksClear') {
-    return ajaxBaseState<ITask>()
+    return ajaxBaseState<Task>()
   }
 
   return state
@@ -252,11 +252,11 @@ import { connect } from 'react-redux'
 import { ThunkDispatch } from 'redux-thunk'
 import { mapEntities, isLoading, isLoaded } from 'flux-entities'
 
-import { Tasks, IStateProps, IDispatchProps } from './Tasks'
-import { IState } from './store'
+import { Tasks, StateProps, DispatchProps } from './Tasks'
+import { State } from './store'
 import { fetchTasks, clearTasks } from './actions'
 
-const mapStateToProps = (state: IState): IStateProps => {
+const mapStateToProps = (state: State): StateProps => {
   console.log(state.users)
   return {
     tasks: mapEntities(state.tasks),
@@ -265,7 +265,7 @@ const mapStateToProps = (state: IState): IStateProps => {
   }
 }
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, AnyAction>): IDispatchProps => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, AnyAction>): DispatchProps => {
   return {
     fetchTasks: () => dispatch(fetchTasks()),
     clearTasks: () => dispatch(clearTasks())
@@ -284,22 +284,22 @@ Component:
 ```ts
 import React from 'react'
 
-import { ITask } from './types'
+import { Task } from './types'
 
-export interface IStateProps {
-  users: ITask[]
+export interface StateProps {
+  users: Task[]
   loading: boolean
   loaded: boolean
 }
 
-export interface IDispatchProps {
+export interface DispatchProps {
   fetchTasks: () => Promise<void>
   clearTasks: () => void
 }
 
-type TProps = IStateProps & IDispatchProps
+type Props = StateProps & DispatchProps
 
-class Tasks extends React.PureComponent<TProps> {
+class Tasks extends React.PureComponent<Props> {
   public render(): JSX.Element {
     return (
       <React.Fragment>

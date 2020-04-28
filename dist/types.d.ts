@@ -1,19 +1,19 @@
-export interface IEntityHashMap<T> {
+export interface EntityMap<T> {
     [k: string]: T;
 }
-export interface IBaseState<T> {
+export interface BaseState<T> {
     ids: Array<number | string>;
-    all: IEntityHashMap<T>;
+    all: EntityMap<T>;
 }
-export interface ISelectableState<T> extends IBaseState<T> {
-    selectedId: number | string | null;
+export interface SelectableState<T> extends BaseState<T> {
+    selectedId?: number | string;
 }
-export interface IAjaxState<ErrorType = string> {
+export interface AjaxState<ErrorType = string> {
     loading: boolean;
     touched: boolean;
     errors: ErrorType[];
 }
-export interface IAjaxBaseState<T, ErrorType = string> extends IBaseState<T>, IAjaxState<ErrorType> {
+export interface AjaxBaseState<T, ErrorType = string> extends BaseState<T>, AjaxState<ErrorType> {
 }
-export interface ISelectableAjaxBaseState<T, ErrorType = string> extends IAjaxBaseState<T, ErrorType>, ISelectableState<T> {
+export interface SelectableAjaxBaseState<T, ErrorType = string> extends AjaxBaseState<T, ErrorType>, SelectableState<T> {
 }

@@ -1,6 +1,6 @@
-import { IBaseState, ISelectableState, IAjaxState, IAjaxBaseState, ISelectableAjaxBaseState } from './types';
-export declare function baseState<T>(): IBaseState<T>;
-export declare function selectableState<T>(): ISelectableState<T>;
-export declare function ajaxState<ErrorType = string>(): IAjaxState<ErrorType>;
-export declare function ajaxBaseState<T, ErrorType = string>(): IAjaxBaseState<T, ErrorType>;
-export declare function selectableAjaxBaseState<T, ErrorType = string>(): ISelectableAjaxBaseState<T, ErrorType>;
+import { BaseState, SelectableState, AjaxState, AjaxBaseState, SelectableAjaxBaseState } from './types';
+export declare function baseState<T>(): BaseState<T>;
+export declare function selectableState<T>(): SelectableState<T>;
+export declare function ajaxState<ErrorType = string>(): AjaxState<ErrorType>;
+export declare function ajaxBaseState<T, ErrorType = string>(): AjaxBaseState<T, ErrorType>;
+export declare function selectableAjaxBaseState<T, ErrorType = string>(): SelectableAjaxBaseState<T, ErrorType>;

@@ -38,52 +38,52 @@ See SPECIFICATION.md (coming soon)
 
 ### Interfaces
 
-#### `IEntityHashMap`
+#### `EntityMap`
 
 A generic type used in almost all the other types defined in the library. It's simple hashmap. The signature is `[id: number]: T`.
 
 Example:
 
 ```ts
-interface IUser {
+interface User {
   id: number
   name: string
 }
 
-interface IUsersMap extends IEntityHashMap<IUser> // { [id: number]: IUser }
+interface UsersMap extends EntityMap<User> // { [id: number]: User }
 ```
 
-#### `IBaseState`
+#### `BaseState`
 
-At a minimum, each slice of the store will have two properties: `all` and `ids`, where `all` is an `IEntityHashMap` and `ids` is an array, normally of `number` or `string`.
+At a minimum, each slice of the store will have two properties: `all` and `ids`, where `all` is an `EntityMap` and `ids` is an array, normally of `number` or `string`.
 
 Example:
 
 ```ts
-interface IUser {
+interface User {
   id: number
   name: string
 }
 
-interface IUsersState extends IBaseState<IUser> {
+interface UsersState extends BaseState<User> {
   ids: number[]
-  all: IEntityHashMap<IUser>
+  all: EntityMap<User>
 }
 ```
 
 If you are using Redux, a reducer might look like this:
 
 ```ts
-interface IUsersState extends IBaseState<IUser> {}
+interface UsersState extends BaseState<User> {}
 
-const initialState: IUsersState = {
+const initialState: UsersState = {
   ids: [],
   all: {}
 }
 
-const usersReducer = (state: IUsersState = initialState, action): IUsersState => {
+const usersReducer = (state: UsersState = initialState, action): UsersState => {
   if (action.type === 'SET_USERS') {
-    return action.payload.reduce<IUsersState>((acc, curr) => {
+    return action.payload.reduce<UsersState>((acc, curr) => {
       return {
         ids: Array.from(new Set([...acc.ids, curr.id])),
         all: { ...acc.all, [curr.id]: curr }
@@ -93,14 +93,14 @@ const usersReducer = (state: IUsersState = initialState, action): IUsersState =>
 }
 ```
 
-#### `IAjaxState`
+#### `AjaxState`
 
 Provides `touched`, `loading` and `loaded`. Useful for data loaded from an API.
 
 Example:
 
 ```ts
-interface ILoadingState extends IAjaxState {}
+interface ILoadingState extends AjaxState {}
 
 const initialLoadingState: ILoadingState = {
   touched: false,
@@ -109,16 +109,16 @@ const initialLoadingState: ILoadingState = {
 }
 ```
 
-A state containing just these three properties is not very useful, but you can add your own additional keys as you see fit (`IBaseState` is often used alongside `IAjaxState` - so much so there is a `IAjaxBaseState`, as described next).
+A state containing just these three properties is not very useful, but you can add your own additional keys as you see fit (`BaseState` is often used alongside `AjaxState` - so much so there is a `AjaxBaseState`, as described next).
 
-#### `IAjaxBaseState`
+#### `AjaxBaseState`
 
-A combination of `IBaseState` and `IAjaxState`. Maybe you are loading some tasks; the state could look like this:
+A combination of `BaseState` and `AjaxState`. Maybe you are loading some tasks; the state could look like this:
 
 ```ts
-interface ITasksState extends IAjaxBaseState<ITask> {}
+interface TasksState extends AjaxBaseState<Task> {}
 
-const initialTasksState: ITasksState = {
+const initialTasksState: TasksState = {
   ids: [],
   all: {},
   touched: false,
@@ -135,7 +135,7 @@ const fetchTasks = (projectId: number): ThunkAction<Promise<void>, {}, {}, AnyAc
   return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
       dispatch(fetchTasksRequest())
     try {
-      const response = await axios.get<ITask[]>(`http://api.com/tasks?projectId=${projectId}`)
+      const response = await axios.get<Task[]>(`http://api.com/tasks?projectId=${projectId}`)
       dispatch(fetchTasksSuccess(response.data))
     } catch (e) {
       dispatch(fetchTasksFailure((e as AxiosError).message))
@@ -144,7 +144,7 @@ const fetchTasks = (projectId: number): ThunkAction<Promise<void>, {}, {}, AnyAc
 }
 
 // Reducer
-const tasksReducer = (state: ITasksState = initialState, action): ITasksState => {
+const tasksReducer = (state: TasksState = initialState, action): TasksState => {
   if (action.type === 'tasksFetchRequest') {
     return {
       ...state,
@@ -155,7 +155,7 @@ const tasksReducer = (state: ITasksState = initialState, action): ITasksState =>
   }
 
   if (action.type === 'tasksFetchSuccess') {
-    return action.payload.reduce<ITasksState>((acc, curr) => {
+    return action.payload.reduce<TasksState>((acc, curr) => {
       return {
         ...state,
         loading: false,
@@ -177,21 +177,21 @@ const tasksReducer = (state: ITasksState = initialState, action): ITasksState =>
 }
 ```
 
-#### `ISelectableState`
+#### `SelectableState`
 
-Add a `selected` property on top of `IBaseState`.
+Add a `selected` property on top of `BaseState`.
 
 Example:
 
 ```ts
-interface IUser {
+interface User {
   id: number
   name: string
 }
 
-interface ISelectableUsersState extends ISelectableState<IUser> {}
+interface SelectableUsersState extends SelectableState<User> {}
 
-const initialUsersState: ISelectableUsersState = {
+const initialUsersState: SelectableUsersState = {
   all: {},  
   ids: [],
   selectedId: null
@@ -201,15 +201,15 @@ const initialUsersState: ISelectableUsersState = {
 In Redux, an reducer might look like this:
 
 ```ts
-interface IProjectsState extends ISelectableState<IProject> {}
+interface ProjectsState extends SelectableState<Project> {}
 
-const initialState: IProjectsState = {
+const initialState: ProjectsState = {
   ids: [],
   all: {},
   selectedId: null
 }
 
-const projectsReducer = (state: IProjectsState = initialState, action): IProjectsState => {
+const projectsReducer = (state: ProjectsState = initialState, action): ProjectsState => {
   if (action.type === 'setSelectedProject') {
     return {
       ...state,
@@ -219,16 +219,16 @@ const projectsReducer = (state: IProjectsState = initialState, action): IProject
 }
 ```
 
-#### `ISelectableAjaxState`
+#### `SelectableAjaxState`
 
-An `IBaseState` that extends `IAjaxState` and `ISelectableState`.
+An `BaseState` that extends `AjaxState` and `SelectableState`.
 
 ### States
 
 Each of the above interfaces has an associated `state` function which returns the default initial state. This is to save you typing the same default state each time you add another slice to your store. For example, instead of:
 
 ```ts
-const usersState: IAjaxBaseState<IUser> = {
+const usersState: AjaxBaseState<User> = {
   ids: [],
   all: {},
   errors: [],
@@ -240,22 +240,22 @@ const usersState: IAjaxBaseState<IUser> = {
 You can use the `ajaxBaseState` state function:
 
 ```ts
-const usersState: IAjaxBaseState<IUser> = {
+const usersState: AjaxBaseState<User> = {
   ...ajaxBaseState()
 }
 
 // or
 
-const usersState: IAjaxBaseState<IUser> = ajaxBaseState<IUse>()
+const usersState: AjaxBaseState<User> = ajaxBaseState<IUse>()
 ```
 
 The following state functions are provided:
 
-- `IBaseState` -> `baseState`
-- `ISelectableState` -> `selectableState`
-- `IAjaxState` -> `ajaxState`
-- `IAjaxBaseState` -> `ajaxBaseState`
-- `ISelectableAjaxBaseState` -> `selectableAjaxBaseState`
+- `BaseState` -> `baseState`
+- `SelectableState` -> `selectableState`
+- `AjaxState` -> `ajaxState`
+- `AjaxBaseState` -> `ajaxBaseState`
+- `SelectableAjaxBaseState` -> `selectableAjaxBaseState`
 
 ### Helpers
 
@@ -263,12 +263,12 @@ These helper functions derive commonly used data from states extended from the i
 
 #### `mapEntities`
 
-Returns an array of the interface is passed to `IBaseState`.
+Returns an array of the interface is passed to `BaseState`.
 
 Example:
 
 ```ts
-const usersState: IBaseState<IUser> = {
+const usersState: BaseState<User> = {
   ids: [1],
   all: {
     1: {
@@ -280,17 +280,17 @@ const usersState: IBaseState<IUser> = {
 
 const users = mapEntities(usersState) // [{ id: 1, name: 'Alice' }]
                                       // `mapEntities` is generic and 
-                                      // infers that `users` is of type `IUser[]`
+                                      // infers that `users` is of type `User[]`
 ```
 
 #### `selectedEntity`
 
-Returns the currently selected entity of a `ISelectableState`, or null if there isn't one.
+Returns the currently selected entity of a `SelectableState`, or null if there isn't one.
 
 Example: 
 
 ```ts
-const usersState: ISelectableState<IUser> = {
+const usersState: SelectableState<User> = {
   selectedId: 1,
   ids: [1],
   all: {
@@ -302,17 +302,17 @@ const usersState: ISelectableState<IUser> = {
 }
 
 const user = selectedEntity(usersState) // { id: 1, name: 'Alice' } 
-                                        // `user` in inferred to be of type `IUser`
+                                        // `user` in inferred to be of type `User`
 ```
 
 #### `isLoaded`
 
-Helper to determine state of a slice of the store that extends `IAjaxState` has finishing loading. Basically just checks if the store is _not_ in the initial state (`touched = false`) and `loading` is `false`.
+Helper to determine state of a slice of the store that extends `AjaxState` has finishing loading. Basically just checks if the store is _not_ in the initial state (`touched = false`) and `loading` is `false`.
 
 ```ts
-interface IUsersState extends IAjaxState<IUser> {}
+interface UsersState extends AjaxState<User> {}
 
-const initialUsersState: IUsersState = {
+const initialUsersState: UsersState = {
   all: {},
   ids: [],
   touched: true,
@@ -325,12 +325,12 @@ isLoaded(initialUsersState) // true
 
 #### `isLoading`
 
-Helper to determine state of a slice of the store that extends `IAjaxState` is currently loading some data. Basically just checks if the store has not in an error state (for example, the API request has failed) and `loading` is `true`.
+Helper to determine state of a slice of the store that extends `AjaxState` is currently loading some data. Basically just checks if the store has not in an error state (for example, the API request has failed) and `loading` is `true`.
 
 ```ts
-interface IUsersState extends IAjaxState<IUser> {}
+interface UsersState extends AjaxState<User> {}
 
-const initialUsersState: IUsersState = {
+const initialUsersState: UsersState = {
   all: {},
   ids: [],
   touched: true,
@@ -341,14 +341,14 @@ const initialUsersState: IUsersState = {
 isLoading(initialUsersState) // true
 ```
 
-#### `isErrorState`
+#### `hasError`
 
-Helper to determine state of a slice of the store that extends `IAjaxState` has failed with an error (`errors.length > 0`).
+Helper to determine state of a slice of the store that extends `AjaxState` has failed with an error (`errors.length > 0`).
 
 ```ts
-interface IUsersState extends IAjaxState<IUser> {}
+interface UsersState extends AjaxState<User> {}
 
-const initialUsersState: IUsersState = {
+const initialUsersState: UsersState = {
   all: {},
   ids: [],
   touched: true,
@@ -356,5 +356,5 @@ const initialUsersState: IUsersState = {
   errors: ['An error has occurred']
 }
 
-isErrorState(initialUsersState) // true
+hasError(initialUsersState) // true
 ```

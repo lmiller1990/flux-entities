@@ -1,6 +1,6 @@
-import { ISelectableState, IAjaxState, IBaseState } from './types'
+import { SelectableState, AjaxState, BaseState } from './types'
 
-function selectedEntity<T>(state: ISelectableState<T>): T | null {
+function selectedEntity<T>(state: SelectableState<T>): T | null {
   if (!state.selectedId) {
     return null
   }
@@ -8,19 +8,19 @@ function selectedEntity<T>(state: ISelectableState<T>): T | null {
   return state.all[state.selectedId]
 }
 
-function mapEntities<T>(state: IBaseState<T>): T[] {
+function mapEntities<T>(state: BaseState<T>): T[] {
   return state.ids.map(id => state.all[id])
 }
 
-function isLoaded<T>(state: IAjaxState<T>): boolean {
+function isLoaded<T>(state: AjaxState<T>): boolean {
   return !state.loading && state.touched && !state.errors.length
 }
 
-function isLoading<T>(state: IAjaxState<T>): boolean {
+function isLoading<T>(state: AjaxState<T>): boolean {
   return state.loading && state.touched && !state.errors.length
 }
 
-function isErrorState<T>(state: IAjaxState<T>): boolean {
+function hasError<T>(state: AjaxState<T>): boolean {
   return !state.loading && state.touched && state.errors.length > 0
 }
 
@@ -30,5 +30,5 @@ export {
   mapEntities,
   isLoaded,
   isLoading,
-  isErrorState
+  hasError
 }

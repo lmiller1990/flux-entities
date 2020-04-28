@@ -1,26 +1,26 @@
 import {
-  IBaseState,
-  ISelectableState,
-  IAjaxState,
-  IAjaxBaseState,
-  ISelectableAjaxBaseState
+  BaseState,
+  SelectableState,
+  AjaxState,
+  AjaxBaseState,
+  SelectableAjaxBaseState
  } from './types'
 
-export function baseState<T>(): IBaseState<T> {
+export function baseState<T>(): BaseState<T> {
   return {
     ids: [],
     all: {}
   }
 }
 
-export function selectableState<T>(): ISelectableState<T> {
+export function selectableState<T>(): SelectableState<T> {
   return {
     ...baseState<T>(),
     selectedId: null
   }
 }
 
-export function ajaxState<ErrorType = string>(): IAjaxState<ErrorType> {
+export function ajaxState<ErrorType = string>(): AjaxState<ErrorType> {
   return {
     touched: false,
     loading: false,
@@ -28,14 +28,14 @@ export function ajaxState<ErrorType = string>(): IAjaxState<ErrorType> {
   }
 }
 
-export function ajaxBaseState<T, ErrorType = string>(): IAjaxBaseState<T, ErrorType> {
+export function ajaxBaseState<T, ErrorType = string>(): AjaxBaseState<T, ErrorType> {
   return {
     ...baseState<T>(),
     ...ajaxState<ErrorType>()
   }
 }
 
-export function selectableAjaxBaseState<T, ErrorType = string>(): ISelectableAjaxBaseState<T, ErrorType> {
+export function selectableAjaxBaseState<T, ErrorType = string>(): SelectableAjaxBaseState<T, ErrorType> {
   return {
   ...baseState<T>(),
   ...ajaxState<ErrorType>(),

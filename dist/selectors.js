@@ -19,7 +19,7 @@ function isLoading(state) {
     return state.loading && state.touched && !state.errors.length;
 }
 exports.isLoading = isLoading;
-function isErrorState(state) {
+function hasError(state) {
     return !state.loading && state.touched && state.errors.length > 0;
 }
-exports.isErrorState = isErrorState;
+exports.hasError = hasError;
