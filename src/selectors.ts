@@ -13,7 +13,7 @@ function mapEntities<T>(state: BaseState<T>): T[] {
 }
 
 function isReady<T>(state: AjaxState<T>): boolean {
-  return state.ready && isLoaded(state) && !hasError(state)
+  return state.ready
 }
 
 function isLoaded<T>(state: AjaxState<T>): boolean {
