@@ -12,6 +12,10 @@ function mapEntities<T>(state: BaseState<T>): T[] {
   return state.ids.map(id => state.all[id])
 }
 
+function isReady<T>(state: AjaxState<T>): boolean {
+  return state.ready && isLoaded(state) && !hasError(state)
+}
+
 function isLoaded<T>(state: AjaxState<T>): boolean {
   return !state.loading && state.touched && !state.errors.length
 }
@@ -28,6 +32,7 @@ function hasError<T>(state: AjaxState<T>): boolean {
 export {
   selectedEntity,
   mapEntities,
+  isReady,
   isLoaded,
   isLoading,
   hasError
