@@ -12,6 +12,7 @@ export interface SelectableState<T> extends BaseState<T> {
 }
 
 export interface AjaxState<ErrorType = string> {
+  ready: boolean
   loading: boolean
   touched: boolean
   errors: ErrorType[]

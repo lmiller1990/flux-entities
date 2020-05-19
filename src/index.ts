@@ -10,6 +10,7 @@ import {
 import {
   isLoaded,
   isLoading,
+  isReady,
   hasError,
   mapEntities,
   selectedEntity,
@@ -33,6 +34,7 @@ export {
 
   isLoaded,
   isLoading,
+  isReady,
   hasError,
   mapEntities,
   selectedEntity,

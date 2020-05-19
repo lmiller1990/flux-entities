@@ -22,6 +22,7 @@ export function selectableState<T>(): SelectableState<T> {
 
 export function ajaxState<ErrorType = string>(): AjaxState<ErrorType> {
   return {
+    ready: false,
     touched: false,
     loading: false,
     errors: []

@@ -1,12 +1,16 @@
 {
   "name": "flux-entities",
   "devDependencies": {
+    "@types/jest": "^25.2.3",
+    "jest": "^26.0.1",
+    "ts-jest": "^26.0.0",
     "ts-node": "^8.2.0",
     "typescript": "^3.5.1"
   },
   "scripts": {
-    "build": "yarn tsc --outDir dist --declaration"
+    "build": "yarn tsc --outDir dist --declaration",
+    "test": "yarn jest"
   },
   "main": "dist/index.js",
-  "version": "0.0.2"
+  "version": "0.0.3"
 }
