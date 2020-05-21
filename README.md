@@ -8,6 +8,7 @@ The basic idea is each "slice" of the store has the same shape, constructed usin
 
 - `all`
 - `ids`
+- `ready` // new in 0.0.4!
 - `loading`
 - `touched`
 - `errors`
@@ -105,6 +106,7 @@ interface ILoadingState extends AjaxState {}
 const initialLoadingState: ILoadingState = {
   touched: false,
   loading: false,
+  ready: false,
   errors: []
 }
 ```
@@ -121,6 +123,7 @@ interface TasksState extends AjaxBaseState<Task> {}
 const initialTasksState: TasksState = {
   ids: [],
   all: {},
+  ready: false,
   touched: false,
   loading: false,
   errors: []
@@ -158,6 +161,7 @@ const tasksReducer = (state: TasksState = initialState, action): TasksState => {
     return action.payload.reduce<TasksState>((acc, curr) => {
       return {
         ...state,
+        ready: true,
         loading: false,
         ids: Array.from(new Set([...acc.ids, curr.id])),
         all: { ...acc.all, [curr.id]: curr }
@@ -168,6 +172,7 @@ const tasksReducer = (state: TasksState = initialState, action): TasksState => {
   if (action.type === 'tasksFetchFailure') {
     return {
       ...state,
+      ready: true,
       loading: false,
       errors: [action.payload],
     }
@@ -340,6 +345,26 @@ const initialUsersState: UsersState = {
 
 isLoading(initialUsersState) // true
 ```
+
+#### `isReady`
+
+Helper to determine state of a slice of the store that extends `AjaxState` is `ready` - that is, the initial request and data required is in the store.
+
+```ts
+interface UsersState extends AjaxState<User> {}
+
+const initialUsersState: UsersState = {
+  all: {},
+  ids: [],
+  ready: true,
+  touched: true,
+  loading: false,
+  errors: []
+}
+
+isReady(initialUsersState) // true
+```
+
 
 #### `hasError`
 
