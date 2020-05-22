@@ -24,6 +24,7 @@ function selectableState() {
 exports.selectableState = selectableState;
 function ajaxState() {
     return {
+        ready: false,
         touched: false,
         loading: false,
         errors: []

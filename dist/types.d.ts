@@ -9,6 +9,7 @@ export interface SelectableState<T> extends BaseState<T> {
     selectedId?: number | string;
 }
 export interface AjaxState<ErrorType = string> {
+    ready: boolean;
     loading: boolean;
     touched: boolean;
     errors: ErrorType[];
