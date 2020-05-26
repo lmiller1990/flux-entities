@@ -1,6 +1,6 @@
-import { SelectableState, AjaxState, BaseState } from './types'
+import { SelectableBaseState, AjaxState, BaseState } from './types'
 
-function selectedEntity<T>(state: SelectableState<T>): T | null {
+function selectedEntity<T>(state: SelectableBaseState<T>): T | null {
   if (!state.selectedId) {
     return null
   }

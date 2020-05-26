@@ -1,9 +1,9 @@
 import {
   BaseState,
-  SelectableState,
+  SelectableBaseState,
   AjaxState,
   AjaxBaseState,
-  SelectableAjaxState
+  SelectableAjaxBaseState
  } from './types'
 
 export function baseState<T>(): BaseState<T> {
@@ -13,7 +13,7 @@ export function baseState<T>(): BaseState<T> {
   }
 }
 
-export function selectableState<T>(): SelectableState<T> {
+export function selectableBaseState<T>(): SelectableBaseState<T> {
   return {
     ...baseState<T>(),
     selectedId: null
@@ -36,10 +36,9 @@ export function ajaxBaseState<T, ErrorType = string>(): AjaxBaseState<T, ErrorTy
   }
 }
 
-export function selectableAjaxState<T, ErrorType = string>(): SelectableAjaxState<T, ErrorType> {
+export function selectableAjaxBaseState<T, ErrorType = string>(): SelectableAjaxBaseState<T, ErrorType> {
   return {
-  ...baseState<T>(),
+  ...selectableBaseState<T>(),
   ...ajaxState<ErrorType>(),
-  ...selectableState<T>()
   }
 }

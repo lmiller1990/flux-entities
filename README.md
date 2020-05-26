@@ -96,7 +96,7 @@ const usersReducer = (state: UsersState = initialState, action): UsersState => {
 
 #### `AjaxState`
 
-Provides `touched`, `loading` and `loaded`. Useful for data loaded from an API.
+Provides `touched`, `loading`, `ready` and `errors`. Useful for data loaded from an API.
 
 Example:
 
@@ -111,7 +111,7 @@ const initialLoadingState: ILoadingState = {
 }
 ```
 
-A state containing just these three properties is not very useful, but you can add your own additional keys as you see fit (`BaseState` is often used alongside `AjaxState` - so much so there is a `AjaxBaseState`, as described next).
+A state containing just these four properties is not very useful, but you can add your own additional keys as you see fit (`BaseState` is often used alongside `AjaxState` - so much so there is a `AjaxBaseState`, as described next).
 
 #### `AjaxBaseState`
 
@@ -151,6 +151,7 @@ const tasksReducer = (state: TasksState = initialState, action): TasksState => {
   if (action.type === 'tasksFetchRequest') {
     return {
       ...state,
+      ready: false,
       loading: true,
       touched: true,
       errors: []
@@ -172,7 +173,7 @@ const tasksReducer = (state: TasksState = initialState, action): TasksState => {
   if (action.type === 'tasksFetchFailure') {
     return {
       ...state,
-      ready: true,
+      ready: false,
       loading: false,
       errors: [action.payload],
     }
@@ -182,7 +183,7 @@ const tasksReducer = (state: TasksState = initialState, action): TasksState => {
 }
 ```
 
-#### `SelectableState`
+#### `SelectableBaseState`
 
 Add a `selected` property on top of `BaseState`.
 
@@ -194,7 +195,7 @@ interface User {
   name: string
 }
 
-interface SelectableUsersState extends SelectableState<User> {}
+interface SelectableUsersState extends SelectableBaseState<User> {}
 
 const initialUsersState: SelectableUsersState = {
   all: {},  
@@ -206,7 +207,7 @@ const initialUsersState: SelectableUsersState = {
 In Redux, an reducer might look like this:
 
 ```ts
-interface ProjectsState extends SelectableState<Project> {}
+interface ProjectsState extends SelectableBaseState<Project> {}
 
 const initialState: ProjectsState = {
   ids: [],
@@ -224,9 +225,9 @@ const projectsReducer = (state: ProjectsState = initialState, action): ProjectsS
 }
 ```
 
-#### `SelectableAjaxState`
+#### `SelectableAjaxBaseState`
 
-An `BaseState` that extends `AjaxState` and `SelectableState`.
+An `SelectableBaseState` that extends `AjaxState`.
 
 ### States
 
@@ -252,16 +253,16 @@ const usersState: AjaxBaseState<User> = {
 
 // or
 
-const usersState: AjaxBaseState<User> = ajaxBaseState<IUse>()
+const usersState: AjaxBaseState<User> = ajaxBaseState<User>()
 ```
 
 The following state functions are provided:
 
 - `BaseState` -> `baseState`
-- `SelectableState` -> `selectableState`
+- `SelectableBaseState` -> `selectableBaseState`
 - `AjaxState` -> `ajaxState`
 - `AjaxBaseState` -> `ajaxBaseState`
-- `SelectableAjaxState` -> `selectableAjaxState`
+- `SelectableAjaxBaseState` -> `selectableAjaxBaseState`
 
 ### Helpers
 
@@ -291,12 +292,12 @@ const users = mapEntities(usersState) // [{ id: 1, name: 'Alice' }]
 
 #### `selectedEntity`
 
-Returns the currently selected entity of a `SelectableState`, or null if there isn't one.
+Returns the currently selected entity of a `SelectableBaseState`, or null if there isn't one.
 
 Example: 
 
 ```ts
-const usersState: SelectableState<User> = {
+const usersState: SelectableBaseState<User> = {
   selectedId: 1,
   ids: [1],
   all: {
@@ -321,6 +322,7 @@ interface UsersState extends AjaxState<User> {}
 const initialUsersState: UsersState = {
   all: {},
   ids: [],
+  ready: true,
   touched: true,
   loading: false,
   errors: []
@@ -339,6 +341,7 @@ interface UsersState extends AjaxState<User> {}
 const initialUsersState: UsersState = {
   all: {},
   ids: [],
+  ready: false,
   touched: true,
   loading: true,
   errors: []
@@ -349,7 +352,7 @@ isLoading(initialUsersState) // true
 
 #### `isReady`
 
-Helper to determine state of a slice of the store that extends `AjaxState` is `ready` - that is, the initial request and data required is in the store.
+Helper to determine state of a slice of the store that extends `AjaxState` is `ready` - that is, the initial request and data required is in the store. `ready` will remain true as long as there is valid data in the store, even if the store is subsequently in a loading state.
 
 ```ts
 interface UsersState extends AjaxState<User> {}
@@ -377,6 +380,7 @@ interface UsersState extends AjaxState<User> {}
 const initialUsersState: UsersState = {
   all: {},
   ids: [],
+  ready: false,
   touched: true,
   loading: false,
   errors: ['An error has occurred']
