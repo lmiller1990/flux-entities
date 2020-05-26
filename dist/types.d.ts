@@ -5,7 +5,7 @@ export interface BaseState<T> {
     ids: Array<number | string>;
     all: EntityMap<T>;
 }
-export interface SelectableState<T> extends BaseState<T> {
+export interface SelectableBaseState<T> extends BaseState<T> {
     selectedId?: number | string;
 }
 export interface AjaxState<ErrorType = string> {
@@ -16,5 +16,5 @@ export interface AjaxState<ErrorType = string> {
 }
 export interface AjaxBaseState<T, ErrorType = string> extends BaseState<T>, AjaxState<ErrorType> {
 }
-export interface SelectableAjaxBaseState<T, ErrorType = string> extends AjaxBaseState<T, ErrorType>, SelectableState<T> {
+export interface SelectableAjaxBaseState<T, ErrorType = string> extends SelectableBaseState<T>, AjaxState<ErrorType> {
 }

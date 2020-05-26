@@ -18,10 +18,10 @@ function baseState() {
     };
 }
 exports.baseState = baseState;
-function selectableState() {
+function selectableBaseState() {
     return __assign({}, baseState(), { selectedId: null });
 }
-exports.selectableState = selectableState;
+exports.selectableBaseState = selectableBaseState;
 function ajaxState() {
     return {
         ready: false,
@@ -36,6 +36,6 @@ function ajaxBaseState() {
 }
 exports.ajaxBaseState = ajaxBaseState;
 function selectableAjaxBaseState() {
-    return __assign({}, baseState(), ajaxState(), selectableState());
+    return __assign({}, selectableBaseState(), ajaxState());
 }
 exports.selectableAjaxBaseState = selectableAjaxBaseState;
