@@ -1,6 +1,6 @@
 import {
   BaseState,
-  SelectableState,
+  SelectableBaseState,
   AjaxState,
   AjaxBaseState,
   SelectableAjaxBaseState,
@@ -18,7 +18,7 @@ import {
 
 import {
   baseState,
-  selectableState,
+  selectableBaseState,
   ajaxState,
   ajaxBaseState,
   selectableAjaxBaseState
@@ -28,7 +28,7 @@ export {
   AjaxState,
   BaseState,
   EntityMap,
-  SelectableState,
+  SelectableBaseState,
   AjaxBaseState,
   SelectableAjaxBaseState,
 
@@ -40,7 +40,7 @@ export {
   selectedEntity,
 
   baseState,
-  selectableState,
+  selectableBaseState,
   ajaxState,
   ajaxBaseState,
   selectableAjaxBaseState
