@@ -227,7 +227,7 @@ const projectsReducer = (state: ProjectsState = initialState, action): ProjectsS
 
 #### `SelectableAjaxBaseState`
 
-An `SelectableBaseState` that extends `AjaxState`.
+A `SelectableBaseState` that extends `AjaxState`.
 
 ### States
 
