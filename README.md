@@ -236,6 +236,7 @@ Each of the above interfaces has an associated `state` function which returns th
 const usersState: AjaxBaseState<User> = {
   ids: [],
   all: {},
+  ready: false,
   errors: [],
   loading: false,
   touched: false
@@ -260,7 +261,7 @@ The following state functions are provided:
 - `SelectableState` -> `selectableState`
 - `AjaxState` -> `ajaxState`
 - `AjaxBaseState` -> `ajaxBaseState`
-- `SelectableAjaxBaseState` -> `selectableAjaxBaseState`
+- `SelectableAjaxState` -> `selectableAjaxState`
 
 ### Helpers
 

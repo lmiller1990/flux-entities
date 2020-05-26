@@ -3,7 +3,7 @@ import {
   SelectableState,
   AjaxState,
   AjaxBaseState,
-  SelectableAjaxBaseState
+  SelectableAjaxState
  } from './types'
 
 export function baseState<T>(): BaseState<T> {
@@ -36,7 +36,7 @@ export function ajaxBaseState<T, ErrorType = string>(): AjaxBaseState<T, ErrorTy
   }
 }
 
-export function selectableAjaxBaseState<T, ErrorType = string>(): SelectableAjaxBaseState<T, ErrorType> {
+export function selectableAjaxState<T, ErrorType = string>(): SelectableAjaxState<T, ErrorType> {
   return {
   ...baseState<T>(),
   ...ajaxState<ErrorType>(),

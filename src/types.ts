@@ -20,4 +20,4 @@ export interface AjaxState<ErrorType = string> {
 
 export interface AjaxBaseState<T, ErrorType = string> extends BaseState<T>, AjaxState<ErrorType> { }
 
-export interface SelectableAjaxBaseState<T, ErrorType = string> extends AjaxBaseState<T, ErrorType>, SelectableState<T> { }
+export interface SelectableAjaxState<T, ErrorType = string> extends AjaxBaseState<T, ErrorType>, SelectableState<T> { }
