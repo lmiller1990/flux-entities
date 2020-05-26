@@ -5,22 +5,27 @@ import {
   SelectableBaseState,
   isLoading,
   isLoaded,
+  isReady,
   hasError,
   selectedEntity,
 } from '../src';
  
 describe('selectedEntity', () => {
-  it('is not the specified ID, none selected by default', () => {
-    const state: SelectableBaseState<any> = selectableBaseState()
-    const actual = selectedEntity(state)
-    expect(actual).not.toBe(null)
+  const initialState: SelectableBaseState<any> = {
+    ...selectableBaseState(),
+    ids: [ 1 ],
+    all: { 1: { key: 'value' } },
+  }
+
+  it('returns null, because no selected ID by default', () => {
+    const actual = selectedEntity(initialState)
+    expect(actual).toBe(null)
   })
 
-  it('is the specified ID', () => {
-    const id = 1
-    const state: SelectableBaseState<any> = { ...selectableBaseState(), selectedId: 1}
+  it('returns the object in the store with the selected ID', () => {
+    const state: SelectableBaseState<any> = { ...initialState, selectedId: 1}
     const actual = selectedEntity(state)
-    expect(actual).toBe(1)
+    expect(actual).toStrictEqual({ key: 'value' })
   })
 })
 
