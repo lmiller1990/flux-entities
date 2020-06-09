@@ -8,6 +8,10 @@ function selectedEntity<T>(state: SelectableBaseState<T>): T | null {
   return state.all[state.selectedId]
 }
 
+function selectEntity<T>(state: BaseState<T>, id: any): T | null {
+  return state.all[id] || null
+}
+
 function mapEntities<T>(state: BaseState<T>): T[] {
   return state.ids.map(id => state.all[id])
 }
@@ -31,6 +35,7 @@ function hasError<T>(state: AjaxState<T>): boolean {
 
 export {
   selectedEntity,
+  selectEntity,
   mapEntities,
   isReady,
   isLoaded,

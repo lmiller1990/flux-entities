@@ -1,6 +1,8 @@
 import {
   AjaxBaseState,
   ajaxBaseState,
+  BaseState,
+  baseState,
   selectableBaseState,
   SelectableBaseState,
   isLoading,
@@ -8,8 +10,9 @@ import {
   isReady,
   hasError,
   selectedEntity,
+  selectEntity
 } from '../src';
- 
+
 describe('selectedEntity', () => {
   const initialState: SelectableBaseState<any> = {
     ...selectableBaseState(),
@@ -28,6 +31,26 @@ describe('selectedEntity', () => {
     expect(actual).toStrictEqual({ key: 'value' })
   })
 })
+
+describe('selectEntity', () => {
+  const initialState: BaseState<any> = {
+    ...baseState(),
+    ids: [ 1 ],
+    all: { 1: { key: 'value' } },
+  }
+
+  it('returns null, because no ID was given', () => {
+    const actual = selectEntity(initialState, null)
+    expect(actual).toBe(null)
+  })
+
+  it('returns the object in the store with the given ID', () => {
+    const state: BaseState<any> = { ...initialState }
+    const actual = selectEntity(state, 1)
+    expect(actual).toStrictEqual({ key: 'value' })
+  })
+})
+ 
 
 describe('isLoading', () => {
   it('is not loading by default', () => {
