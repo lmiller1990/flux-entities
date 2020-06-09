@@ -312,6 +312,27 @@ const user = selectedEntity(usersState) // { id: 1, name: 'Alice' }
                                         // `user` in inferred to be of type `User`
 ```
 
+#### `selectEntity`
+
+Returns an entity of `BaseState` for a given ID, or null if there isn't one.
+
+Example: 
+
+```ts
+const usersState: BaseState<User> = {
+  ids: [1],
+  all: {
+    1: {
+      id: 1,
+      name: 'Alice'
+    }
+  }
+}
+
+const user = selectEntity(usersState, 1) // { id: 1, name: 'Alice' } 
+                                         // `user` is inferred to be of type `User`
+```
+
 #### `isLoaded`
 
 Helper to determine state of a slice of the store that extends `AjaxState` has finishing loading. Basically just checks if the store is _not_ in the initial state (`touched = false`) and `loading` is `false`.
