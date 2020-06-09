@@ -1,14 +1,42 @@
 import {
   AjaxBaseState,
   ajaxBaseState,
+  BaseState,
+  baseState,
   selectableBaseState,
   SelectableBaseState,
   isLoading,
   isLoaded,
   isReady,
   hasError,
+  mapEntities,
   selectedEntity,
 } from '../src';
+
+describe('mapEntities', () => {
+  it('returns empty array, because the store is empty', () => {
+    const emptyState: BaseState<any> = {
+      ...baseState(),
+      ids: [],
+      all: {},
+    }
+
+    const actual = mapEntities(emptyState)
+    expect(actual).toEqual([])
+  })
+
+  it('returns an array of all objects in the store', () => {
+    const state: BaseState<any> = {
+      ...baseState(),
+      ids: [ 1 ],
+      all: { 1: { key: 'value' } },
+    }
+
+    const actual = mapEntities(state)
+    expect(actual).toEqual([{ key: 'value' }])
+    expect(actual.length).toBe(1)
+  })
+})
  
 describe('selectedEntity', () => {
   const initialState: SelectableBaseState<any> = {
