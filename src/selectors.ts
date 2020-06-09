@@ -28,7 +28,6 @@ function hasError<T>(state: AjaxState<T>): boolean {
   return !state.loading && state.touched && state.errors.length > 0
 }
 
-
 export {
   selectedEntity,
   selectEntity,
