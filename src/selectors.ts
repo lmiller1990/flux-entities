@@ -1,11 +1,7 @@
 import { SelectableBaseState, AjaxState, BaseState } from './types'
 
 function selectedEntity<T>(state: SelectableBaseState<T>): T | null {
-  if (!state.selectedId) {
-    return null
-  }
-
-  return state.all[state.selectedId]
+  return selectEntity(state, state.selectedId)
 }
 
 function selectEntity<T>(state: BaseState<T>, id: any): T | null {
