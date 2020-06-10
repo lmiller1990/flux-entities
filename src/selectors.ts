@@ -13,7 +13,7 @@ function selectEntities<T>(state: BaseState<T>, ids: Array<number | string>): T[
 }
 
 function mapEntities<T>(state: BaseState<T>): T[] {
-  return state.ids.map(id => state.all[id])
+  return selectEntities(state, state.ids)
 }
 
 function isReady<T>(state: AjaxState<T>): boolean {
