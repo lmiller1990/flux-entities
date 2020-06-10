@@ -350,6 +350,30 @@ const initialUsersState: UsersState = {
 isLoading(initialUsersState) // true
 ```
 
+#### `selectEntities`
+
+Returns an array of found entities of `BaseState` for a given array of IDs.
+
+Example: 
+
+```ts
+const usersState: BaseState<User> = {
+  ids: [1],
+  all: {
+    1: {
+      id: 1,
+      name: 'Alice'
+    },
+    2: {
+      id: 2,
+      name: 'Bob'
+    }
+  }
+}
+
+const user = selectEntities(usersState, [2]) // [{ id: 2, name: 'Alice' }]
+```
+
 #### `isReady`
 
 Helper to determine state of a slice of the store that extends `AjaxState` is `ready` - that is, the initial request and data required is in the store. `ready` will remain true as long as there is valid data in the store, even if the store is subsequently in a loading state.
