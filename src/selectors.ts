@@ -4,7 +4,7 @@ function selectedEntity<T>(state: SelectableBaseState<T>): T | null {
   return selectEntity(state, state.selectedId)
 }
 
-function selectEntity<T>(state: BaseState<T>, id: any): T | null {
+function selectEntity<T>(state: BaseState<T>, id: string | number): T | null {
   return state.all[id] || null
 }
 
