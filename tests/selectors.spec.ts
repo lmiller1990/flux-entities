@@ -15,7 +15,7 @@ import {
 
 describe('mapEntities', () => {
   it('returns empty array, because the store is empty', () => {
-    const emptyState: BaseState<any> = {
+    const emptyState: BaseState<Record<number, { key: string }>> = {
       ...baseState(),
       ids: [],
       all: {},
