@@ -9,10 +9,29 @@ import {
   isLoaded,
   isReady,
   hasError,
+  getEntity,
   mapEntities,
   selectedEntity,
-  selectEntity
 } from '../src';
+
+describe('getEntity', () => {
+  const initialState: BaseState<any> = {
+    ...baseState(),
+    ids: [ 1 ],
+    all: { 1: { key: 'value' } },
+  }
+
+  it('returns null, because no ID was given', () => {
+    const actual = getEntity(initialState, null)
+    expect(actual).toBe(null)
+  })
+
+  it('returns the object in the store with the given ID', () => {
+    const state: BaseState<any> = { ...initialState }
+    const actual = getEntity(state, 1)
+    expect(actual).toStrictEqual({ key: 'value' })
+  })
+})
 
 describe('mapEntities', () => {
   it('returns empty array, because the store is empty', () => {
@@ -57,26 +76,6 @@ describe('selectedEntity', () => {
     expect(actual).toStrictEqual({ key: 'value' })
   })
 })
-
-describe('selectEntity', () => {
-  const initialState: BaseState<any> = {
-    ...baseState(),
-    ids: [ 1 ],
-    all: { 1: { key: 'value' } },
-  }
-
-  it('returns null, because no ID was given', () => {
-    const actual = selectEntity(initialState, null)
-    expect(actual).toBe(null)
-  })
-
-  it('returns the object in the store with the given ID', () => {
-    const state: BaseState<any> = { ...initialState }
-    const actual = selectEntity(state, 1)
-    expect(actual).toStrictEqual({ key: 'value' })
-  })
-})
- 
 
 describe('isLoading', () => {
   it('is not loading by default', () => {

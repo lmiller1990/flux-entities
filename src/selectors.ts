@@ -1,11 +1,11 @@
 import { SelectableBaseState, AjaxState, BaseState } from './types'
 
-function selectedEntity<T>(state: SelectableBaseState<T>): T | null {
-  return selectEntity(state, state.selectedId)
+function getEntity<T>(state: BaseState<T>, id: string | number): T | null {
+  return state.all[id] || null
 }
 
-function selectEntity<T>(state: BaseState<T>, id: string | number): T | null {
-  return state.all[id] || null
+function selectedEntity<T>(state: SelectableBaseState<T>): T | null {
+  return getEntity(state, state.selectedId)
 }
 
 function mapEntities<T>(state: BaseState<T>): T[] {
@@ -30,7 +30,7 @@ function hasError<T>(state: AjaxState<T>): boolean {
 
 export {
   selectedEntity,
-  selectEntity,
+  getEntity,
   mapEntities,
   isReady,
   isLoaded,

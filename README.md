@@ -312,7 +312,7 @@ const user = selectedEntity(usersState) // { id: 1, name: 'Alice' }
                                         // `user` in inferred to be of type `User`
 ```
 
-#### `selectEntity`
+#### `getEntity`
 
 Returns an entity of `BaseState` for a given ID, or null if there isn't one.
 
@@ -329,7 +329,7 @@ const usersState: BaseState<User> = {
   }
 }
 
-const user = selectEntity(usersState, 1) // { id: 1, name: 'Alice' } 
+const user = getEntity(usersState, 1) // { id: 1, name: 'Alice' } 
                                          // `user` is inferred to be of type `User`
 ```
 

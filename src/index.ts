@@ -12,9 +12,9 @@ import {
   isLoading,
   isReady,
   hasError,
+  getEntity,
   mapEntities,
   selectedEntity,
-  selectEntity,
 } from './selectors'
 
 import {
@@ -37,9 +37,9 @@ export {
   isLoading,
   isReady,
   hasError,
+  getEntity,
   mapEntities,
   selectedEntity,
-  selectEntity,
 
   baseState,
   selectableBaseState,
