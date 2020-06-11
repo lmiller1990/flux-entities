@@ -13,8 +13,8 @@ import {
   isReady,
   hasError,
   mapEntities,
+  getEntities,
   selectedEntity,
-  selectEntities,
 } from './selectors'
 
 import {
@@ -38,8 +38,8 @@ export {
   isReady,
   hasError,
   mapEntities,
+  getEntities,
   selectedEntity,
-  selectEntities,
 
   baseState,
   selectableBaseState,

@@ -350,7 +350,7 @@ const initialUsersState: UsersState = {
 isLoading(initialUsersState) // true
 ```
 
-#### `selectEntities`
+#### `getEntities`
 
 Returns an array of found entities of `BaseState` for a given array of IDs.
 
@@ -371,7 +371,7 @@ const usersState: BaseState<User> = {
   }
 }
 
-const user = selectEntities(usersState, [2]) // [{ id: 2, name: 'Alice' }]
+const user = getEntities(usersState, [2]) // [{ id: 2, name: 'Alice' }]
 ```
 
 #### `isReady`
