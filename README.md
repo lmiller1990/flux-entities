@@ -297,21 +297,21 @@ Returns an array of found entities of `BaseState` for a given array of IDs. Basi
 Example: 
 
 ```ts
-const usersState: BaseState<User> = {
-  ids: [1],
+const postsState: BaseState<Post> = {
+  ids: [1, 2, 3],
   all: {
-    1: {
-      id: 1,
-      name: 'Alice'
-    },
-    2: {
-      id: 2,
-      name: 'Bob'
-    }
+    { id: 1, name: 'Post 1' },
+    { id: 2, name: 'Post 2' },
+    { id: 3, name: 'Post 3' },
   }
 }
 
-const user = getEntities(usersState, [2]) // [{ id: 2, name: 'Alice' }]
+const user = { id: 1, post_ids: [2, 3] } 
+const posts = selectEntities(postsState, user.post_ids) 
+// [
+//   { id: 2, name: 'Post 2' }, 
+//   { id: 3, name: 'Post 3' }
+// ]
 ```
 
 #### `selectedEntity`
