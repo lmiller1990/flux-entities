@@ -290,6 +290,30 @@ const users = mapEntities(usersState) // [{ id: 1, name: 'Alice' }]
                                       // infers that `users` is of type `User[]`
 ```
 
+#### `getEntities`
+
+Returns an array of found entities of `BaseState` for a given array of IDs. Basically provides a consistent way to retrieve a subset of entities from a given state.
+
+Example: 
+
+```ts
+const usersState: BaseState<User> = {
+  ids: [1],
+  all: {
+    1: {
+      id: 1,
+      name: 'Alice'
+    },
+    2: {
+      id: 2,
+      name: 'Bob'
+    }
+  }
+}
+
+const user = getEntities(usersState, [2]) // [{ id: 2, name: 'Alice' }]
+```
+
 #### `selectedEntity`
 
 Returns the currently selected entity of a `SelectableBaseState`, or null if there isn't one.
@@ -348,30 +372,6 @@ const initialUsersState: UsersState = {
 }
 
 isLoading(initialUsersState) // true
-```
-
-#### `getEntities`
-
-Returns an array of found entities of `BaseState` for a given array of IDs.
-
-Example: 
-
-```ts
-const usersState: BaseState<User> = {
-  ids: [1],
-  all: {
-    1: {
-      id: 1,
-      name: 'Alice'
-    },
-    2: {
-      id: 2,
-      name: 'Bob'
-    }
-  }
-}
-
-const user = getEntities(usersState, [2]) // [{ id: 2, name: 'Alice' }]
 ```
 
 #### `isReady`
