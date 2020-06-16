@@ -294,7 +294,7 @@ const users = mapEntities(usersState) // [{ id: 1, name: 'Alice' }]
 
 Returns an array of found entities of `BaseState` for a given array of IDs. Basically provides a consistent way to retrieve a subset of entities from a given state.
 
-Example: 
+Example:
 
 ```ts
 const postsState: BaseState<Post> = {
@@ -312,6 +312,27 @@ const posts = selectEntities(postsState, user.post_ids)
 //   { id: 2, name: 'Post 2' }, 
 //   { id: 3, name: 'Post 3' }
 // ]
+```
+
+#### `getEntity`
+
+Returns an entity of `BaseState` for a given ID, or null if there isn't one.
+
+Example: 
+
+```ts
+const usersState: BaseState<User> = {
+  ids: [1],
+  all: {
+    1: {
+      id: 1,
+      name: 'Alice'
+    }
+  }
+}
+
+const user = getEntity(usersState, 1) // { id: 1, name: 'Alice' } 
+                                      // `user` is inferred to be of type `User`
 ```
 
 #### `selectedEntity`

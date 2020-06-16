@@ -9,6 +9,7 @@ import {
   isLoaded,
   isReady,
   hasError,
+  getEntity,
   mapEntities,
   getEntities,
   selectedEntity,
@@ -42,6 +43,25 @@ describe('getEntities', () => {
   })
 })
 
+describe('getEntity', () => {
+  const initialState: BaseState<any> = {
+    ...baseState(),
+    ids: [ 1 ],
+    all: { 1: { key: 'value' } },
+  }
+
+  it('returns null, because no ID was given', () => {
+    const actual = getEntity(initialState, null)
+    expect(actual).toBe(null)
+  })
+
+  it('returns the object in the store with the given ID', () => {
+    const state: BaseState<any> = { ...initialState }
+    const actual = getEntity(state, 1)
+    expect(actual).toStrictEqual({ key: 'value' })
+  })
+})
+
 describe('mapEntities', () => {
   it('returns empty array, because the store is empty', () => {
     const emptyState: BaseState<Record<number, { key: string }>> = {
@@ -66,7 +86,7 @@ describe('mapEntities', () => {
     expect(actual.length).toBe(1)
   })
 })
- 
+
 describe('selectedEntity', () => {
   const initialState: SelectableBaseState<any> = {
     ...selectableBaseState(),
