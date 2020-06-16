@@ -290,6 +290,27 @@ const users = mapEntities(usersState) // [{ id: 1, name: 'Alice' }]
                                       // infers that `users` is of type `User[]`
 ```
 
+#### `getEntity`
+
+Returns an entity of `BaseState` for a given ID, or null if there isn't one.
+
+Example: 
+
+```ts
+const usersState: BaseState<User> = {
+  ids: [1],
+  all: {
+    1: {
+      id: 1,
+      name: 'Alice'
+    }
+  }
+}
+
+const user = getEntity(usersState, 1) // { id: 1, name: 'Alice' } 
+                                         // `user` is inferred to be of type `User`
+```
+
 #### `selectedEntity`
 
 Returns the currently selected entity of a `SelectableBaseState`, or null if there isn't one.
@@ -310,7 +331,6 @@ const usersState: SelectableBaseState<User> = {
 
 const user = selectedEntity(usersState) // { id: 1, name: 'Alice' } 
                                         // `user` in inferred to be of type `User`
-```
 
 #### `isLoaded`
 
