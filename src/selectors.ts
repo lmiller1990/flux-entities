@@ -1,15 +1,19 @@
 import { SelectableBaseState, AjaxState, BaseState } from './types'
 
+function getEntities<T>(state: BaseState<T>, ids: Array<number | string>): T[] {
+  return ids.map(id => state.all[id])
+}
+
 function getEntity<T>(state: BaseState<T>, id: string | number): T | null {
   return state.all[id] || null
 }
 
-function selectedEntity<T>(state: SelectableBaseState<T>): T | null {
-  return getEntity(state, state.selectedId)
+function mapEntities<T>(state: BaseState<T>): T[] {
+  return getEntities(state, state.ids)
 }
 
-function mapEntities<T>(state: BaseState<T>): T[] {
-  return state.ids.map(id => state.all[id])
+function selectedEntity<T>(state: SelectableBaseState<T>): T | null {
+  return getEntity(state, state.selectedId)
 }
 
 function isReady<T>(state: AjaxState<T>): boolean {
@@ -30,6 +34,7 @@ function hasError<T>(state: AjaxState<T>): boolean {
 
 export {
   selectedEntity,
+  getEntities,
   getEntity,
   mapEntities,
   isReady,

@@ -11,8 +11,37 @@ import {
   hasError,
   getEntity,
   mapEntities,
+  getEntities,
   selectedEntity,
 } from '../src';
+
+describe('getEntities', () => {
+  it('returns empty array, when given empty array of ids', () => {
+    const emptyState: BaseState<Record<number, { key: string }>> = {
+      ...baseState(),
+      ids: [],
+      all: {},
+    }
+
+    const actual = getEntities(emptyState, [])
+    expect(actual).toEqual([])
+  })
+
+  it('returns an array of found objects in the store for a given array of ids', () => {
+    const state: BaseState<any> = {
+      ...baseState(),
+      ids: [ 1, 2 ],
+      all: { 
+        1: { key: 'value' },
+        2: { foo: 'bar' }
+      },
+    }
+
+    const actual = getEntities(state, [2])
+    expect(actual).toEqual([{ foo: 'bar' }])
+    expect(actual.length).toBe(1)
+  })
+})
 
 describe('getEntity', () => {
   const initialState: BaseState<any> = {

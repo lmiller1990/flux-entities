@@ -290,6 +290,30 @@ const users = mapEntities(usersState) // [{ id: 1, name: 'Alice' }]
                                       // infers that `users` is of type `User[]`
 ```
 
+#### `getEntities`
+
+Returns an array of found entities of `BaseState` for a given array of IDs. Basically provides a consistent way to retrieve a subset of entities from a given state.
+
+Example:
+
+```ts
+const postsState: BaseState<Post> = {
+  ids: [1, 2, 3],
+  all: {
+    { id: 1, name: 'Post 1' },
+    { id: 2, name: 'Post 2' },
+    { id: 3, name: 'Post 3' },
+  }
+}
+
+const user = { id: 1, post_ids: [2, 3] } 
+const posts = selectEntities(postsState, user.post_ids) 
+// [
+//   { id: 2, name: 'Post 2' }, 
+//   { id: 3, name: 'Post 3' }
+// ]
+```
+
 #### `getEntity`
 
 Returns an entity of `BaseState` for a given ID, or null if there isn't one.
@@ -308,7 +332,7 @@ const usersState: BaseState<User> = {
 }
 
 const user = getEntity(usersState, 1) // { id: 1, name: 'Alice' } 
-                                         // `user` is inferred to be of type `User`
+                                      // `user` is inferred to be of type `User`
 ```
 
 #### `selectedEntity`
@@ -331,6 +355,7 @@ const usersState: SelectableBaseState<User> = {
 
 const user = selectedEntity(usersState) // { id: 1, name: 'Alice' } 
                                         // `user` in inferred to be of type `User`
+```
 
 #### `isLoaded`
 

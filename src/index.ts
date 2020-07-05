@@ -14,6 +14,7 @@ import {
   hasError,
   getEntity,
   mapEntities,
+  getEntities,
   selectedEntity,
 } from './selectors'
 
@@ -39,6 +40,7 @@ export {
   hasError,
   getEntity,
   mapEntities,
+  getEntities,
   selectedEntity,
 
   baseState,
